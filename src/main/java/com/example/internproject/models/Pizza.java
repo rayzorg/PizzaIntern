@@ -8,6 +8,7 @@ import java.util.Set;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,19 +24,16 @@ public class Pizza {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	@Column(nullable = false)
 	private String name;
 	private String description;
-	
+	@Column(nullable = false)
 	private BigDecimal price;
+	@Column(nullable = false)
 	private boolean available;
-	
-
+	@Column(nullable = false)
 	private String imageUrl;
-	
-	
-	
-	
-	//Set enforces uniqueness in contrast with List
+
 	@ManyToMany
 	@JoinTable(
 	        name = "pizza_toppings",
@@ -56,8 +54,6 @@ public class Pizza {
         this.available = true;
     }
 
-    // --- Getters ---
-	
 
     public Long getId() {
         return id;

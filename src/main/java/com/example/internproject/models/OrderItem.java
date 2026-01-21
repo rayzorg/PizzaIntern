@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Id;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,14 +33,14 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "pizza_id")
-    private Pizza pizza;  // menu pizza
+    private Pizza pizza;  
 
     @Enumerated(EnumType.STRING)
     private Size size;
-
+    @Column(nullable = false)
     private int quantity;
-
-    private BigDecimal price; // snapshot price for this item
+    @Column(nullable = false)
+    private BigDecimal price; 
     
     
     public OrderItem() {
