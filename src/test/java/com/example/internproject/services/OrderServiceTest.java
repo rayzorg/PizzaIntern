@@ -230,7 +230,7 @@ public class OrderServiceTest {
       
 		 Pizza pepperoniPizza = new Pizza(
                  "Pepperoni",
-                 "Spicy pepperoni pizza",
+                 "Spicy pepperoni pizza small",
                  new BigDecimal("10.00"),
                  "pizzas/pepperoni.jpg"
          );
