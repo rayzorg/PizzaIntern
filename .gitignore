@@ -32,3 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 application.properties
+
+.project
+.classpath
+.settings/
+.metadata/
+
