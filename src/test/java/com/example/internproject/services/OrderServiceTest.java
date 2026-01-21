@@ -289,5 +289,36 @@ public class OrderServiceTest {
 		    assertThat(item.getSubTotal())
 		        .isEqualByComparingTo(BigDecimal.valueOf(20));
 	}
+	
+	@Test
+	void shouldNotCreateOrderIfPizzaIsNotAvailable() {
+		Topping cheese = toppingService.addTopping(new Topping("Cheese"));
+        Topping pepperoni = toppingService.addTopping(new Topping("Pepperoni"));
+      
+		 Pizza pepperoniPizza = new Pizza(
+                 "Pepperoni",
+                 "Spicy pepperoni pizza",
+                 new BigDecimal("10.00"),
+                 "pizzas/pepperoni.jpg"
+         );
+         pepperoniPizza.setToppings(Set.of(cheese, pepperoni));
+         pepperoniPizza.setAvailable(false);//pizza not available
+         pizzaRepository.save(pepperoniPizza);
+         
+         CreateOrder dto = new CreateOrder();
+		    dto.setEmail("test@test.com");
+		    dto.setPickupTime(LocalDateTime.now().plusHours(1));
+		    
+		    OrderItemRequest orderItem=new OrderItemRequest();
+		    orderItem.setPizzaId(pepperoniPizza.getId());
+		    orderItem.setQuantity(2);
+		    orderItem.setSize(Size.MEDIUM);
+		    
+		    dto.setItems(List.of(orderItem));
+         
+         assertThatThrownBy(() -> orderService.placeOrder(dto,dto.getEmail()))
+	        .isInstanceOf(ResponseStatusException.class)
+	        .hasMessageContaining("unavailable");
+	}
 
 }
