@@ -17,7 +17,7 @@ public class CreateOrder {
 	    private List<OrderItemRequest> items;
 	    
 	    @FutureOrPresent(message = "Pickup time cannot be in the past")
-	    private LocalDateTime pickupTime; // new field
+	    private LocalDateTime pickupTime;
 	    
 	    @NotEmpty
 	    @Email(message="Email must be valid")
