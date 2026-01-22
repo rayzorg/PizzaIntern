@@ -12,8 +12,10 @@ import com.example.internproject.models.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
 public class JwtService {
 	
 	@Value("${jwt.secret}")

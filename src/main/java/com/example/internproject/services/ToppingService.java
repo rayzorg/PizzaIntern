@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import com.example.internproject.models.Topping;
 import com.example.internproject.repository.ToppingRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class ToppingService {
 
     private final ToppingRepository toppingRepository;

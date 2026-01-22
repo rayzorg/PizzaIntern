@@ -83,7 +83,7 @@ public class AdminSecurityTests {
         mockMvc.perform(get("/api/admin/orders"))
                 .andExpect(status().isForbidden());
     }
-	
+	@Test
 	void shouldNotAllowAccessToAdminPizzaEndpointIfUnauthenticated() throws Exception {
 		mockMvc.perform(put("/api/admin/pizzas/2/availability")
                 .param("available", "true"))

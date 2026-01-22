@@ -13,6 +13,8 @@ import com.example.internproject.repository.PizzaRepository;
 import jakarta.transaction.Transactional;
 
 @Service
+@Transactional
+
 public class PizzaService {
 
 	private final PizzaRepository pizzaRepository;
