@@ -22,6 +22,7 @@ import com.example.internproject.models.Orders;
 import com.example.internproject.models.User;
 import com.example.internproject.repository.OrderRepository;
 import com.example.internproject.services.OrderService;
+import com.example.internproject.services.UserService;
 
 import jakarta.validation.Valid;
 
@@ -31,9 +32,11 @@ import jakarta.validation.Valid;
 public class OrderController {
 
     private final OrderService orderService;
+    private final UserService userService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService,UserService userService) {
         this.orderService = orderService;
+        this.userService=userService;
     }
 
     @PostMapping
@@ -55,8 +58,9 @@ public class OrderController {
     
     @PreAuthorize("hasRole('CUSTOMER')")
     @GetMapping("/myorders")
-    public List<OrderSummaryDto> getMyOrders(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+    public List<OrderSummaryDto> getMyOrders(Authentication authentication) {	
+    	 User user = (User) authentication.getPrincipal();
+    	 
         return orderService.getOrderHistory(user.getId());
     }
 

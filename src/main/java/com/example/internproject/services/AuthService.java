@@ -16,13 +16,11 @@ import jakarta.transaction.Transactional;
 public class AuthService {
 
     private final AuthenticationManager authManager;
-    private final UserService userService;
     private final JwtService jwtService;
 
-    public AuthService(AuthenticationManager authManager, JwtService jwtService,UserService userService) {
+    public AuthService(AuthenticationManager authManager, JwtService jwtService) {
         this.authManager = authManager;
         this.jwtService = jwtService;
-        this.userService=userService;
     }
 
     public String login(String email, String password) {

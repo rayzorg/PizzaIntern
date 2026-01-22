@@ -190,16 +190,6 @@ public class OrderService {
 			    return dto;
 		}
 		
-		/*public List<OrderSummaryDto> getOrderHistory(Long userId) {
-
-		    List<Orders> orders = orderRepository
-		            .findByUserIdOrderByCreatedAtDesc(userId);
-
-		    return orders.stream()
-		            .map(this::mapToOrderHistoryDto)
-		            .toList();
-		}*/
-		
 		public List<OrderSummaryDto> getOrderHistory(Long userId) {
 			return orderRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
 			        .map(order -> {
