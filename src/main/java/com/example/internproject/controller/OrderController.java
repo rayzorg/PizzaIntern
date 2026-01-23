@@ -60,7 +60,6 @@ public class OrderController {
     @GetMapping("/myorders")
     public List<OrderSummaryDto> getMyOrders(Authentication authentication) {	
     	 User user = (User) authentication.getPrincipal();
-    	 
         return orderService.getOrderHistory(user.getId());
     }
 

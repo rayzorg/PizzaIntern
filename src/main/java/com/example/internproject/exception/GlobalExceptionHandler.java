@@ -1,10 +1,14 @@
 package com.example.internproject.exception;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,6 +28,22 @@ public class GlobalExceptionHandler {
 	                 .stream()
 	                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
 	                 .collect(Collectors.toList());
+	    }
+	 
+	// --- Spring Security: Access Denied (403) ---
+	    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+	    @ResponseStatus(HttpStatus.FORBIDDEN)
+	    @ResponseBody
+	    public Map<String, String> handleAccessDenied(Exception ex) {
+	        return Map.of("error", "Access Denied: " + ex.getMessage());
+	    }
+
+	    // --- Spring Security: Authentication failed (401) ---
+	    @ExceptionHandler(AuthenticationException.class)
+	    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+	    @ResponseBody
+	    public Map<String, String> handleAuthentication(Exception ex) {
+	        return Map.of("error", "Unauthorized: " + ex.getMessage());
 	    }
 
 	    // --- Handles custom ResponseStatusExceptions (like 404 Not Found) ---

@@ -58,6 +58,9 @@ public class SecurityConfigPw {
                  .requestMatchers("/api/pizzas/**").permitAll()
         		 .requestMatchers("/api/toppings/**").permitAll()
         		 .requestMatchers("/api/orders/**").permitAll()
+        		 .requestMatchers("/v3/**").permitAll()// api doc
+        		 .requestMatchers("/swagger-ui/**").permitAll()// api doc
+
 
 
 

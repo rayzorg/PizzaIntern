@@ -74,13 +74,11 @@ public class CustomerSecurityTest {
 	    mockMvc.perform(get("/api/orders/myorders")
 	    .header("Authorization", "Bearer " + adminToken))        
 	            .andExpect(status().isForbidden());
-        //throws 500 instead of 403          
 
 	}
 	@Test
 	void shouldNotAllowAccessToCustomerOrdersEndpointIfUnauthorized() throws Exception {
 	    mockMvc.perform(get("/api/orders/myorders"))
-        //throws 500 instead of 403          
-	            .andExpect(status().isUnauthorized());
+	            .andExpect(status().isForbidden());
 	}
 }

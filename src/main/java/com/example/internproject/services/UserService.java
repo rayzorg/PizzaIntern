@@ -27,6 +27,9 @@ public class UserService implements UserDetailsService{
     }
 
     public User register(String name, String email, String rawPassword,String phoneNumber,Role role) {
+    	if (userRepository.existsByEmail(email)) {
+            throw new RuntimeException("Email is already taken"); 
+        }
         User user = new User(name,phoneNumber,email,rawPassword,role);
         user.setPassword(passwordEncoder.encode(rawPassword));
 
