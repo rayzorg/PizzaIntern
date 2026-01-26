@@ -33,7 +33,7 @@ public class PizzaServiceTest {
 	}
 
 	@Test
-	void pizzaShouldBeUnavailableWhenAdminDisablesPizzaInAdminPanel() {
+	void pizzaShouldBeUnavailableWhenAdminDisablesPizzaInAdminpanel() {
 		// given
 		Pizza pizza = new Pizza("hawai", "test", new BigDecimal("10.00"), "test");
 		// when

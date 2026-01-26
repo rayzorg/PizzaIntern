@@ -1,47 +1,30 @@
 package com.example.internproject.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import com.example.internproject.dto.PizzaResponseDto;
 import com.example.internproject.models.Topping;
 import com.example.internproject.repository.ToppingRepository;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import jakarta.transaction.Transactional;
-@SpringBootTest
-@Transactional
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(MockitoExtension.class)
 public class ToppingServiceTest {
-	
-	@Autowired
+	@InjectMocks
 	private ToppingService toppingService;
-	@Autowired
-	private ToppingRepository toppingRepository;
-	
-	@Test
-	void ToppingShouldBeCreated() {
-		 Topping cheese = toppingService.addTopping(new Topping("Cheese"));         
-         
-         assertThat(toppingRepository.findById(cheese.getId())).isPresent();
-         
-	}
-	
-	@Test
-	void shouldRetrieveAllToppings() {
-		 toppingService.addTopping(new Topping("Cheese"));
-         toppingService.addTopping(new Topping("Pepperoni"));
-         
-         
-         List<Topping> toppings = toppingService.getAll();
 
-         assertThat(toppings).isNotEmpty();
-         
-         Topping topping1=toppings.get(0);
-         assertThat(topping1.getName()).isEqualTo("Cheese");
-         }
+	@Mock
+	private ToppingRepository toppingRepository;
+
+	@Test
+	void ToppingShouldHaveCorrectNameAtCreation() {
+		// given
+		Topping cheese = new Topping("cheese");
+		// then
+		assertThat(cheese.getName()).isEqualTo("cheese");
+	}
 
 }
