@@ -17,31 +17,23 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class JwtService {
-	
+
 	@Value("${jwt.secret}")
-    private String SECRET_KEY;
+	private String SECRET_KEY;
 
-    public String generateToken(String email, Role role) {
-        return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role.name())
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(LocalDateTime.now().plusHours(5)
-                        .atZone(ZoneId.systemDefault()).toInstant()))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
-                .compact();
-    }
+	public String generateToken(String email, Role role) {
+		return Jwts.builder().setSubject(email).claim("role", role.name()).setIssuedAt(new Date())
+				.setExpiration(Date.from(LocalDateTime.now().plusHours(5).atZone(ZoneId.systemDefault()).toInstant()))
+				.signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())).compact();
+	}
 
-    public Claims validateToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
+	public Claims validateToken(String token) {
+		return Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())).build()
+				.parseClaimsJws(token).getBody();
+	}
 
-    public boolean isTokenValid(String token, String email) {
-        return validateToken(token).getSubject().equals(email)
-               && validateToken(token).getExpiration().after(new Date());
-    }
+	public boolean isTokenValid(String token, String email) {
+		return validateToken(token).getSubject().equals(email)
+				&& validateToken(token).getExpiration().after(new Date());
+	}
 }

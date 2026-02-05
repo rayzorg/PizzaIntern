@@ -2,8 +2,6 @@ package com.example.internproject.dto;
 
 import java.math.BigDecimal;
 
-import com.example.internproject.models.Size;
-
 public class OrderItemSummaryDto {
 
 	 private String pizzaName;

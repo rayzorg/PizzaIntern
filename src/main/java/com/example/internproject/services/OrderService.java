@@ -2,16 +2,10 @@ package com.example.internproject.services;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import com.example.internproject.dto.CreateOrder;
 import com.example.internproject.dto.OrderItemRequest;
 import com.example.internproject.dto.OrderItemResponse;
@@ -22,14 +16,10 @@ import com.example.internproject.models.OrderItem;
 import com.example.internproject.models.OrderStatus;
 import com.example.internproject.models.Orders;
 import com.example.internproject.models.Pizza;
-import com.example.internproject.models.Size;
-import com.example.internproject.models.Topping;
 import com.example.internproject.models.User;
 import com.example.internproject.repository.OrderRepository;
 import com.example.internproject.repository.PizzaRepository;
-import com.example.internproject.repository.ToppingRepository;
 import com.example.internproject.repository.UserRepository;
-
 import jakarta.transaction.Transactional;
 
 @Service
@@ -102,7 +92,6 @@ public class OrderService {
 				saved.getPickupTime(), itemDtos);
 	}
 
-	@Transactional
 	public List<OrderResponse> getAllOrders() {
 		return orderRepository.findAll().stream().map(this::toResponseDto).toList();
 	}
@@ -123,7 +112,7 @@ public class OrderService {
 
 		return toResponseDto(saved);
 	}
-
+	@Transactional
 	private void sendEmailAndUpdateStatus(Orders order) {
 		try {
 			order.setStatus(OrderStatus.PREPARING);
@@ -163,24 +152,6 @@ public class OrderService {
 		}).toList();
 	}
 
-	private OrderSummaryDto mapToOrderHistoryDto(Orders order) {
-
-		List<OrderItemSummaryDto> items = order.getOrderItems().stream()
-				.map(item -> new OrderItemSummaryDto(item.getPizza().getName(), item.getSize().name(),
-						item.getQuantity(), item.getPrice()))
-				.toList();
-
-		return new OrderSummaryDto(order.getId(), order.getCreatedAt(), order.getTotalPrice(), order.getStatus(),
-				items);
-	}
-
-	/*
-	 * public OrderResponse getOrderById(Long id) { Orders order =
-	 * orderRepository.findById(id) .orElseThrow(() -> new
-	 * ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
-	 * 
-	 * return toResponseDto(order); }
-	 */
 	public OrderResponse getOrder(String publicId, User user) {
 
 		Orders order = orderRepository.findByPublicIdAndUserId(publicId, user.getId())

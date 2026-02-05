@@ -1,9 +1,6 @@
 package com.example.internproject.dto;
 
-import java.util.Set;
-
 import com.example.internproject.models.Size;
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 

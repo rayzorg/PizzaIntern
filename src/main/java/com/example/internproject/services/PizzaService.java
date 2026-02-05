@@ -28,7 +28,7 @@ public class PizzaService {
 				pizza.getBasePrice(), pizza.getImageUrl(),
 				pizza.getToppings().stream().map(Topping::getName).collect(Collectors.toSet()));
 	}
-
+	@Transactional
 	public Pizza addPizza(Pizza pizza) {
 		return pizzaRepository.save(pizza);
 	}

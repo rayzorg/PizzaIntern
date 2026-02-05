@@ -2,11 +2,6 @@ package com.example.internproject.dto;
 
 import java.math.BigDecimal;
 
-import com.example.internproject.models.Size;
-
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-
 public class OrderItemResponse {
 
 	private Long pizzaId;

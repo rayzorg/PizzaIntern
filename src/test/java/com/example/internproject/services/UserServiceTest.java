@@ -41,8 +41,10 @@ class UserServiceTest {
 
 	@InjectMocks
 	private UserService userService;
-	@Mock
-	private AuthService authService;
+	@InjectMocks
+    private AuthService authService;
+
+	
 	@Mock
 	private UserRepository userRepository;
 	@Mock
@@ -62,7 +64,7 @@ class UserServiceTest {
 		when(passwordEncoder.encode(password)).thenReturn("hashedSecret");
 		when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 		// when
-		User user = userService.register("John Doe", "john@test.com", "secret123", "123456789", Role.CUSTOMER);
+		User user = authService.register("John Doe", "john@test.com", "secret123", "123456789", Role.CUSTOMER);
 		// then
 		assertNotNull(user);
 		verify(userRepository).save(user);
@@ -77,7 +79,7 @@ class UserServiceTest {
 		when(userRepository.existsByEmail(email)).thenReturn(true);
 		// when,then
 		RuntimeException exception = assertThrows(RuntimeException.class,
-				() -> userService.register("John", email, "password", "123", Role.CUSTOMER));
+				() -> authService.register("John", email, "password", "123", Role.CUSTOMER));
 
 		assertEquals("Email is already taken", exception.getMessage());
 		verify(userRepository, never()).save(any());

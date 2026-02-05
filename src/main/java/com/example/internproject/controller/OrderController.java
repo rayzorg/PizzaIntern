@@ -1,9 +1,6 @@
 package com.example.internproject.controller;
 
 import java.util.List;
-import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,16 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.internproject.dto.CreateOrder;
 import com.example.internproject.dto.OrderResponse;
 import com.example.internproject.dto.OrderSummaryDto;
-import com.example.internproject.models.Orders;
 import com.example.internproject.models.User;
-import com.example.internproject.repository.OrderRepository;
 import com.example.internproject.services.OrderService;
-import com.example.internproject.services.UserService;
-
 import jakarta.validation.Valid;
 
 @RestController
@@ -33,11 +25,9 @@ import jakarta.validation.Valid;
 public class OrderController {
 
 	private final OrderService orderService;
-	private final UserService userService;
 
-	public OrderController(OrderService orderService, UserService userService) {
+	public OrderController(OrderService orderService) {
 		this.orderService = orderService;
-		this.userService = userService;
 	}
 
 	@PreAuthorize("hasRole('CUSTOMER')")
@@ -48,13 +38,6 @@ public class OrderController {
 		OrderResponse response = orderService.placeOrder(dto, email);
 
 		return ResponseEntity.ok(response);
-	}
-
-	@PreAuthorize("hasRole('CUSTOMER')")
-	@GetMapping("/user/{userId}")
-	public ResponseEntity<List<OrderSummaryDto>> getOrderHistory(@PathVariable Long userId) {
-
-		return ResponseEntity.ok(orderService.getOrderHistory(userId));
 	}
 
 	@PreAuthorize("hasRole('CUSTOMER')")

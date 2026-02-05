@@ -19,67 +19,58 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class EmailService {
 
-	  private final JavaMailSender mailSender;
+	private final JavaMailSender mailSender;
 
-	    public EmailService(JavaMailSender mailSender) {
-	        this.mailSender = mailSender;
-	    }
-
-	    @Async
-	    public void sendOrderConfirmation(Orders order) {
-	        try {
-	            MimeMessage message = mailSender.createMimeMessage();
-	            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-	            helper.setTo(order.getEmail());
-	            helper.setSubject("Your Pizza Order #" + order.getId() + " is confirmed");
-	            helper.setText(buildEmailBody(order), true); // true = HTML
-
-	            mailSender.send(message);
-	        } catch (MessagingException e) {
-	            e.printStackTrace(); 
-	        }
-	    }
-
-	    private String buildEmailBody(Orders order) {
-	        StringBuilder sb = new StringBuilder();
-	        sb.append("<h2>Thank you for your order!</h2>");
-	        sb.append("<p><strong>Order ID:</strong> ").append(order.getId()).append("</p>");
-	        sb.append("<p><strong>Status:</strong> ").append(order.getStatus()).append("</p>");
-	        sb.append("<p><strong>Pickup time:</strong> ").append(order.getPickupTime()).append("</p>");
-	        sb.append("<table border='1' cellpadding='5' cellspacing='0'>");
-	        sb.append("<thead><tr><th>Pizza</th><th>Size</th><th>Qty</th><th>Price</th></tr></thead><tbody>");
-
-	        List<OrderItemResponse> items = order.getOrderItems().stream()
-	            .map(i -> new OrderItemResponse(
-	                i.getPizza().getId(),
-	                i.getPizza().getName(),
-	                i.getSize().name(),
-	                i.getQuantity(),
-	                i.getPrice()
-	            ))
-	            .toList();
-
-	        for (OrderItemResponse item : items) {
-	            BigDecimal rowTotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
-	            sb.append("<tr>")
-	              .append("<td>").append(item.getPizzaName()).append("</td>")
-	              .append("<td>").append(item.getSize()).append("</td>")
-	              .append("<td>").append(item.getQuantity()).append("</td>")
-	              .append("<td>").append(rowTotal).append(" €</td>")
-	              .append("</tr>");
-	        }
-
-	        BigDecimal total = items.stream()
-	            .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
-	            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-	        sb.append("</tbody>");
-	        sb.append("<tfoot><tr><td colspan='3'><strong>Total</strong></td><td>").append(total).append(" €</td></tr></tfoot>");
-	        sb.append("</table>");
-
-	        sb.append("<p>Enjoy your pizza!</p>");
-	        return sb.toString();
-	    }
+	public EmailService(JavaMailSender mailSender) {
+		this.mailSender = mailSender;
 	}
 
+	@Async
+	public void sendOrderConfirmation(Orders order) {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+			helper.setTo(order.getEmail());
+			helper.setSubject("Your Pizza Order #" + order.getId() + " is confirmed");
+			helper.setText(buildEmailBody(order), true); // true = HTML
+
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String buildEmailBody(Orders order) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<h2>Thank you for your order!</h2>");
+		sb.append("<p><strong>Order ID:</strong> ").append(order.getId()).append("</p>");
+		sb.append("<p><strong>Status:</strong> ").append(order.getStatus()).append("</p>");
+		sb.append("<p><strong>Pickup time:</strong> ").append(order.getPickupTime()).append("</p>");
+		sb.append("<table border='1' cellpadding='5' cellspacing='0'>");
+		sb.append("<thead><tr><th>Pizza</th><th>Size</th><th>Qty</th><th>Price</th></tr></thead><tbody>");
+
+		List<OrderItemResponse> items = order.getOrderItems().stream()
+				.map(i -> new OrderItemResponse(i.getPizza().getId(), i.getPizza().getName(), i.getSize().name(),
+						i.getQuantity(), i.getPrice()))
+				.toList();
+
+		for (OrderItemResponse item : items) {
+			BigDecimal rowTotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
+			sb.append("<tr>").append("<td>").append(item.getPizzaName()).append("</td>").append("<td>")
+					.append(item.getSize()).append("</td>").append("<td>").append(item.getQuantity()).append("</td>")
+					.append("<td>").append(rowTotal).append(" €</td>").append("</tr>");
+		}
+
+		BigDecimal total = items.stream().map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQuantity())))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		sb.append("</tbody>");
+		sb.append("<tfoot><tr><td colspan='3'><strong>Total</strong></td><td>").append(total)
+				.append(" €</td></tr></tfoot>");
+		sb.append("</table>");
+
+		sb.append("<p>Enjoy your pizza!</p>");
+		return sb.toString();
+	}
+}

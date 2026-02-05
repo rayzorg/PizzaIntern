@@ -2,12 +2,10 @@ package com.example.internproject.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 public class CreateOrder {
 

@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.internproject.models.Role;
 import com.example.internproject.models.User;
+import com.example.internproject.services.AuthService;
 import com.example.internproject.services.JwtService;
 import com.example.internproject.services.UserService;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -30,6 +31,8 @@ public class AdminSecurityTests {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AuthService authService;
 
     private String adminToken;
     private String customerToken;
@@ -40,8 +43,8 @@ public class AdminSecurityTests {
     
 	@BeforeEach
     void setup() {
-        User admin = userService.register("Admin", "admin@test.com", "password", "000", Role.ADMIN);
-        User customer = userService.register("Cust", "cust@test.com", "password", "111", Role.CUSTOMER);
+        User admin = authService.register("Admin", "admin@test.com", "password", "000", Role.ADMIN);
+        User customer = authService.register("Cust", "cust@test.com", "password", "111", Role.CUSTOMER);
 
         adminId = admin.getId();
         customerId = customer.getId();

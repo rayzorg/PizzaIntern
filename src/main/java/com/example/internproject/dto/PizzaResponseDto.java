@@ -1,14 +1,7 @@
 package com.example.internproject.dto;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
-
-import com.example.internproject.models.Pizza;
-import com.example.internproject.models.Topping;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 
 public class PizzaResponseDto {
 	
