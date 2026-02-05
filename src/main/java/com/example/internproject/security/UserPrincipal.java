@@ -37,6 +37,10 @@ public class UserPrincipal implements UserDetails {
 		return user.getRole();
 	}
 
+	public String getName() {
+		return user.getName();
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;

@@ -123,7 +123,7 @@ class UserServiceTest {
 
 		when(authentication.getPrincipal()).thenReturn(principal);
 		when(authManager.authenticate(any())).thenReturn(authentication);
-		when(jwtService.generateToken("test@test.com", Role.CUSTOMER)).thenReturn("jwt-token");
+		when(jwtService.generateToken("test@test.com", Role.CUSTOMER,"rayan")).thenReturn("jwt-token");
 		// when
 		String token = authService.login(user.getEmail(), "password");
 
@@ -131,7 +131,7 @@ class UserServiceTest {
 		assertEquals("jwt-token", token);
 
 		verify(authManager).authenticate(any());
-		verify(jwtService).generateToken(user.getEmail(), Role.CUSTOMER);
+		verify(jwtService).generateToken(user.getEmail(), Role.CUSTOMER,user.getName());
 	}
 
 }

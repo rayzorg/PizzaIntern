@@ -57,8 +57,8 @@ public class CustomerSecurityTest {
         adminId = admin.getId();
         customerId = customer.getId();
 
-        adminToken = jwtService.generateToken(admin.getEmail(), admin.getRole());
-        customerToken = jwtService.generateToken(customer.getEmail(), customer.getRole());
+        adminToken = jwtService.generateToken(admin.getEmail(), admin.getRole(),admin.getName());
+        customerToken = jwtService.generateToken(customer.getEmail(), customer.getRole(),customer.getName());
         
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)

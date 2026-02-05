@@ -40,7 +40,7 @@ public class AuthService {
 
 		UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
 
-		return jwtService.generateToken(principal.getUsername(), principal.getRole());
+		return jwtService.generateToken(principal.getUsername(), principal.getRole(),principal.getName());
 	}
 
 	public User register(String name, String email, String rawPassword, String phoneNumber, Role role) {
