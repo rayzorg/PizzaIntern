@@ -16,118 +16,119 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(nullable = false)
 	private String name;
-	
-	@Column(nullable = false,unique=true)
+
+	@Column(nullable = false, unique = true)
 	private String email;
-	
+
 	@Column(nullable = false)
 	private String password;
-	
+
 	private String phoneNumber;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Orders> orders = new ArrayList<>();
 
-	
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	
+
 	private LocalDateTime createdAt;
-	
-	public User(){
-		//JPA 
+
+	public User() {
+		// JPA
 	}
-	public User(String name,String phoneNumber, String email, String password,Role role) {
-        this.name = name;
-        this.phoneNumber=phoneNumber;
-        this.email = email;
-        this.password = password;
-        this.role=role;
-        this.createdAt = LocalDateTime.now();
-    }
-	
+
+	public User(String name, String phoneNumber, String email, String password, Role role) {
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.password = password;
+		this.role = role;
+		this.createdAt = LocalDateTime.now();
+	}
+
 	public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-	
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public List<Orders> getOrders() {
-        return orders;
-    }
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
 
+	public List<Orders> getOrders() {
+		return orders;
+	}
 
-    public Role getRole() {
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public Role getRole() {
 		return role;
 	}
+
 	public void setRole(Role role) {
 		this.role = role;
 	}
+
 	public void addOrder(Orders order) {
-        orders.add(order);
-        order.setUser(this);
-    }
+		orders.add(order);
+		order.setUser(this);
+	}
 
-    public void removeOrder(Orders order) {
-        orders.remove(order);
-        order.setUser(null);
-    }
+	public void removeOrder(Orders order) {
+		orders.remove(order);
+		order.setUser(null);
+	}
 
-    
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof User))
+			return false;
+		User other = (User) o;
+		return id != null && id.equals(other.id);
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User other = (User) o;
-        return id != null && id.equals(other.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
+	}
 }

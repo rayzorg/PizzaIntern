@@ -1,14 +1,10 @@
 package com.example.internproject.models;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Id;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
