@@ -5,115 +5,131 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.internproject.models.Role;
 import com.example.internproject.models.User;
+import com.example.internproject.repository.UserRepository;
+import com.example.internproject.security.UserPrincipal;
+
 import jakarta.transaction.Transactional;
 
-@SpringBootTest
-@Transactional 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-	@Autowired
-    private UserService userService;
-	@Autowired
-    private AuthService authService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    
-    @Test
-    @DisplayName("User registered successfully")
-    void shouldRegisterUserSuccessfullyWithPassword() {
-    	
-    	String name = "John Doe";
-        String email = "john@test.com";
-        String password = "secret123";
-        String phone = "123456789";
-        Role role = Role.CUSTOMER;
-        
-        User user = userService.register(name, email, password, phone, role);
-        
-        assertNotNull(user.getId());
-        assertEquals(email, user.getEmail());
-        assertEquals(role, user.getRole());
+	@InjectMocks
+	private UserService userService;
+	@Mock
+	private AuthService authService;
+	@Mock
+	private UserRepository userRepository;
+	@Mock
+	private PasswordEncoder passwordEncoder;
+	@Mock
+	private AuthenticationManager authManager;
+	@Mock
+	private JwtService jwtService;
 
-        // Password should NOT be stored as plain text
-        assertTrue(passwordEncoder.matches(password, user.getPassword()));
-    }
-    
-    @Test
-    void shouldFailIfEmailAlreadyExists() {
-    	userService.register(
-    	        "John",
-    	        "duplicate@test.com",
-    	        "password",
-    	        "123",
-    	        Role.CUSTOMER
-    	    );
+	@Test
+	void shouldRegisterUserSuccessfully() {
+		// given
+		String email = "john@test.com";
+		String password = "secret123";
 
-    	assertThrows(RuntimeException.class, () -> {
-            userService.register(
-                "Another John",
-                "duplicate@test.com",
-                "password2",
-                "456",
-                Role.CUSTOMER
-            );
-        });
-    }
-    
-    @Test
-    void shouldReturnTokenIfSuccesfullLogin() {
-        String email = "123@test.com";
-        String password = "1234";
+		when(userRepository.existsByEmail(email)).thenReturn(false);
+		when(passwordEncoder.encode(password)).thenReturn("hashedSecret");
+		when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+		// when
+		User user = userService.register("John Doe", "john@test.com", "secret123", "123456789", Role.CUSTOMER);
+		// then
+		assertNotNull(user);
+		verify(userRepository).save(user);
 
-        userService.register(
-            "Login User",
-            email,
-            password,
-            "999",
-            Role.CUSTOMER
-        );
+	}
 
-        String token = authService.login(email, password);
+	@Test
+	void shouldFailIfEmailAlreadyExists() {
 
-        assertNotNull(token);
-        assertFalse(token.isBlank());
-    }
-    
-    @Test
-    void shouldFailIfWrongPassword() {
-        String email = "123@test.com";
+		// given
+		String email = "duplicate@test.com";
+		when(userRepository.existsByEmail(email)).thenReturn(true);
+		// when,then
+		RuntimeException exception = assertThrows(RuntimeException.class,
+				() -> userService.register("John", email, "password", "123", Role.CUSTOMER));
 
-        userService.register(
-            "User",
-            email,
-            "1234",
-            "000",
-            Role.CUSTOMER
-        );
+		assertEquals("Email is already taken", exception.getMessage());
+		verify(userRepository, never()).save(any());
+	}
 
-        assertThrows(RuntimeException.class, () -> {
-            authService.login(email, "4321");
-        });
-    }
-    
-    @Test
-    void shouldFailIfUserDoesNotExist() {
-        assertThrows(RuntimeException.class, () -> {
-            authService.login("12@test.com", "password");
-        });
-    }
+	@Test
+	void shouldFailIfUserDoesNotExist() {
 
+		// given
+		String email = "12@test.com";
+
+		when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+		// when,then
+		RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(email, "password"));
+
+		assertEquals("User not found", exception.getMessage());
+		verify(userRepository).findByEmail(email);
+	}
+
+	@Test
+	void shouldFailIfCredentialsAreInvalid() {
+
+		// given
+		when(authManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
+
+		// when,then
+		RuntimeException exception = assertThrows(RuntimeException.class,
+				() -> authService.login("test@test.com", "wrong"));
+		assertEquals("Invalid email or password", exception.getMessage());
+	}
+
+	@Test
+	void shouldLoginSuccessfully() {
+
+		// given
+		User user = new User("rayan", "0493933", "rayan@rayan", "hashedpassword", Role.CUSTOMER);
+		UserPrincipal principal = new UserPrincipal(user);
+
+		Authentication authentication = mock(Authentication.class);
+
+		when(authentication.getPrincipal()).thenReturn(principal);
+		when(authManager.authenticate(any())).thenReturn(authentication);
+		when(jwtService.generateToken("test@test.com", Role.CUSTOMER)).thenReturn("jwt-token");
+		// when
+		String token = authService.login(user.getEmail(), "password");
+
+		// then
+		assertEquals("jwt-token", token);
+
+		verify(authManager).authenticate(any());
+		verify(jwtService).generateToken(user.getEmail(), Role.CUSTOMER);
+	}
 
 }

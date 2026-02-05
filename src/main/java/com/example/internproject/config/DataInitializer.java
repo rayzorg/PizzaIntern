@@ -20,16 +20,16 @@ public class DataInitializer{
     @Bean
     public CommandLineRunner loadMenu(PizzaService pizzaService, ToppingService toppingService,UserService userService) {
         return args -> {
-
+/*
         	//users
-        	//User user3=userService.register("customer", "customer@customer.com", "1234","frfrfrfrfr",Role.CUSTOMER);
-        	//User user1=userService.register("admin", "admin@admin.com", "1234","055604859",Role.ADMIN);
+        	User user3=userService.register("customer", "customer@customer.com", "1234","frfrfrfrfr",Role.CUSTOMER);
+        	User user1=userService.register("admin", "admin@admin.com", "1234","055604859",Role.ADMIN);
             // --- Toppings ---
         	
         	
            
                 
-           /*     
+               
             Topping cheese = toppingService.addTopping(new Topping("Cheese"));
             Topping pepperoni = toppingService.addTopping(new Topping("Pepperoni"));
             Topping ham = toppingService.addTopping(new Topping("Ham"));

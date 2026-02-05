@@ -1,6 +1,7 @@
 package com.example.internproject.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,43 +32,42 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "http://localhost:4200") // Allow Angular to access this API
 public class OrderController {
 
-    private final OrderService orderService;
-    private final UserService userService;
+	private final OrderService orderService;
+	private final UserService userService;
 
-    public OrderController(OrderService orderService,UserService userService) {
-        this.orderService = orderService;
-        this.userService=userService;
-    }
+	public OrderController(OrderService orderService, UserService userService) {
+		this.orderService = orderService;
+		this.userService = userService;
+	}
 
-    @PostMapping
-    public ResponseEntity<OrderResponse> placeOrder(
-        @Valid @RequestBody CreateOrder dto,@AuthenticationPrincipal User user
-    ) {
-    	String email = (user != null) ? user.getEmail() : null;
-        OrderResponse response = orderService.placeOrder(dto,email);
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@PostMapping
+	public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody CreateOrder dto,
+			@AuthenticationPrincipal User user) {
+		String email = (user != null) ? user.getEmail() : null;
+		OrderResponse response = orderService.placeOrder(dto, email);
 
-        return ResponseEntity.ok(response);
-    }
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<OrderSummaryDto>> getOrderHistory(
-            @PathVariable Long userId) {
+		return ResponseEntity.ok(response);
+	}
 
-        return ResponseEntity.ok(orderService.getOrderHistory(userId));
-    }
-    
-    @PreAuthorize("hasRole('CUSTOMER')")
-    @GetMapping("/myorders")
-    public List<OrderSummaryDto> getMyOrders(Authentication authentication) {	
-    	 User user = (User) authentication.getPrincipal();
-        return orderService.getOrderHistory(user.getId());
-    }
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<List<OrderSummaryDto>> getOrderHistory(@PathVariable Long userId) {
 
-  
-    
-    @GetMapping("/{id}")
-    public OrderResponse getOrder(@PathVariable Long id) {
-        return orderService.getOrderById(id);
-    }
+		return ResponseEntity.ok(orderService.getOrderHistory(userId));
+	}
+
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping("/myorders")
+	public List<OrderSummaryDto> getMyOrders(Authentication authentication) {
+		User user = (User) authentication.getPrincipal();
+		return orderService.getOrderHistory(user.getId());
+	}
+
+	@PreAuthorize("hasRole('CUSTOMER')")
+	@GetMapping("/{orderId}")
+	public OrderResponse getOrder(@PathVariable String orderId, @AuthenticationPrincipal User user) {
+		return orderService.getOrder(orderId, user);
+	}
 
 }

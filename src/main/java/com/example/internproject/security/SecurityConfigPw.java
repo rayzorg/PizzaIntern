@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -26,66 +27,63 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.example.internproject.services.JwtService;
 import com.example.internproject.services.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @EnableWebSecurity
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfigPw {
 
-	 private final JwtService jwtService;
-	    private final UserService appUserService;
+	private final JwtService jwtService;
+	private final UserService appUserService;
 
-	    
-	    
-	 public SecurityConfigPw(JwtService jwtService, UserService appUserService) {
-			this.jwtService = jwtService;
-			this.appUserService = appUserService;
-		}
-	 
-	 @Bean
-	    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-		 
-		 
-	        return config.getAuthenticationManager();
-	    }
-	
+	public SecurityConfigPw(JwtService jwtService, UserService appUserService) {
+		this.jwtService = jwtService;
+		this.appUserService = appUserService;
+	}
+
 	@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		 http
-		 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-         .csrf(csrf -> csrf.disable())
-         .authorizeHttpRequests(auth -> auth
-        		 .requestMatchers("/api/auth/**").permitAll()
-                 .requestMatchers("/api/pizzas/**").permitAll()
-        		 .requestMatchers("/api/toppings/**").permitAll()
-        		 .requestMatchers("/api/orders/**").permitAll()
-        		 .requestMatchers("/v3/**").permitAll()// api doc
-        		 .requestMatchers("/swagger-ui/**").permitAll()// api doc
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 
+		return config.getAuthenticationManager();
+	}
 
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/api/pizzas/**")
+						.permitAll().requestMatchers("/api/toppings/**").permitAll().requestMatchers("/api/orders/**")
+						.authenticated().requestMatchers("/v3/**").permitAll()// api
+																				// doc
+						.requestMatchers("/swagger-ui/**").permitAll()// api doc
 
+						.requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                 
-                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+						.anyRequest().authenticated()
 
-                 .anyRequest().authenticated()
+				).exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
+					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				})).addFilterBefore(new JwtAuthenticationFilter(jwtService, appUserService),
+						UsernamePasswordAuthenticationFilter.class);
+		return http.build();
+	}
 
-             )
-             .addFilterBefore(new JwtAuthenticationFilter(jwtService, appUserService), UsernamePasswordAuthenticationFilter.class);
-         return http.build();
-    }
-	
-	 @Bean
-	    public CorsConfigurationSource corsConfigurationSource() {
-	        CorsConfiguration config = new CorsConfiguration();
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration config = new CorsConfiguration();
 
-	        config.setAllowedOrigins(List.of("http://localhost:4200"));
-	        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-	        config.setAllowedHeaders(List.of("*"));
-	        config.setAllowCredentials(true);
+		config.setAllowedOrigins(List.of("http://localhost:4200"));
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		config.setAllowedHeaders(List.of("*"));
 
-	        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	        source.registerCorsConfiguration("/**", config);
+		config.setExposedHeaders(List.of("Authorization"));
 
-	        return source;
-	    }
+		config.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+
+		return source;
+	}
 }

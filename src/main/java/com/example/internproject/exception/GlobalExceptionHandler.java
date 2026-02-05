@@ -19,47 +19,44 @@ import org.springframework.web.server.ResponseStatusException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	 @ExceptionHandler(MethodArgumentNotValidException.class)
-	    @ResponseStatus(HttpStatus.BAD_REQUEST)
-	    @ResponseBody
-	    public List<String> handleValidationErrors(MethodArgumentNotValidException ex) {
-	        return ex.getBindingResult()
-	                 .getFieldErrors()
-	                 .stream()
-	                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-	                 .collect(Collectors.toList());
-	    }
-	 
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public List<String> handleValidationErrors(MethodArgumentNotValidException ex) {
+		return ex.getBindingResult().getFieldErrors().stream()
+				.map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+				.collect(Collectors.toList());
+	}
+
 	// --- Spring Security: Access Denied (403) ---
-	    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
-	    @ResponseStatus(HttpStatus.FORBIDDEN)
-	    @ResponseBody
-	    public Map<String, String> handleAccessDenied(Exception ex) {
-	        return Map.of("error", "Access Denied: " + ex.getMessage());
-	    }
+	@ExceptionHandler({ AccessDeniedException.class, AuthorizationDeniedException.class })
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ResponseBody
+	public Map<String, String> handleAccessDenied(Exception ex) {
+		return Map.of("error", "Access Denied: " + ex.getMessage());
+	}
 
-	    // --- Spring Security: Authentication failed (401) ---
-	    @ExceptionHandler(AuthenticationException.class)
-	    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-	    @ResponseBody
-	    public Map<String, String> handleAuthentication(Exception ex) {
-	        return Map.of("error", "Unauthorized: " + ex.getMessage());
-	    }
+	// --- Spring Security: Authentication failed (401) ---
+	@ExceptionHandler(AuthenticationException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseBody
+	public Map<String, String> handleAuthentication(Exception ex) {
+		return Map.of("error", "Unauthorized: " + ex.getMessage());
+	}
 
-	    // --- Handles custom ResponseStatusExceptions (like 404 Not Found) ---
-	    @ExceptionHandler(ResponseStatusException.class)
-	    @ResponseBody
-	    public List<String> handleResponseStatusException(ResponseStatusException ex) {
-	        return List.of(ex.getReason()); // wrap single reason in a list
-	    }
+	// --- Handles custom ResponseStatusExceptions (like 404 Not Found) ---
+	@ExceptionHandler(ResponseStatusException.class)
+	public ResponseEntity<List<String>> handleResponseStatusException(ResponseStatusException ex) {
+		return ResponseEntity.status(ex.getStatusCode()).body(List.of(ex.getReason()));
+	}
 
-	    // --- Handles all other exceptions ---
-	    @ExceptionHandler(Exception.class)
-	    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	    @ResponseBody
-	    public List<String> handleGeneralException(Exception ex) {
-	        // optionally log ex for debugging
-	        ex.printStackTrace();
-	        return List.of("An unexpected error occurred: " + ex.getMessage());
-	    }
+	// --- Handles all other exceptions ---
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public List<String> handleGeneralException(Exception ex) {
+		// optionally log ex for debugging
+		ex.printStackTrace();
+		return List.of("An unexpected error occurred: " + ex.getMessage());
+	}
 }

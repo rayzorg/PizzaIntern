@@ -8,17 +8,18 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class OrderItemResponse {
-	
-	    private Long pizzaId;
-	    private String pizzaName;
-	    private String size;
-	    private int quantity;
-	    private BigDecimal price;
+
+	private Long pizzaId;
+	private String pizzaName;
+	private String size;
+	private int quantity;
+	private BigDecimal price;
+
 	public OrderItemResponse() {
 	}
 
 	public OrderItemResponse(Long pizzaId, String pizzaName, String size, int quantity, BigDecimal price) {
-		
+
 		this.pizzaId = pizzaId;
 		this.pizzaName = pizzaName;
 		this.size = size;
@@ -41,7 +42,5 @@ public class OrderItemResponse {
 	public BigDecimal getPrice() {
 		return price;
 	}
-	
-	
 
 }
