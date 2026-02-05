@@ -54,13 +54,7 @@ public class SecurityConfigPw {
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/api/pizzas/**")
 						.permitAll().requestMatchers("/api/toppings/**").permitAll().requestMatchers("/api/orders/**")
-						.authenticated().requestMatchers("/v3/**").permitAll()// api
-																				// doc
-						.requestMatchers("/swagger-ui/**").permitAll()// api doc
-
-						.requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-						.anyRequest().authenticated()
+						.authenticated().requestMatchers("/api/admin/**").hasRole("ADMIN").anyRequest().authenticated()
 
 				).exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
 					response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
@@ -76,9 +70,7 @@ public class SecurityConfigPw {
 		config.setAllowedOrigins(List.of("http://localhost:4200"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));
-
 		config.setExposedHeaders(List.of("Authorization"));
-
 		config.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
