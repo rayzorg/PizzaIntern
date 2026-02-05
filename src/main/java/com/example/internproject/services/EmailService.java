@@ -32,7 +32,7 @@ public class EmailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 			helper.setTo(order.getEmail());
-			helper.setSubject("Your Pizza Order #" + order.getId() + " is confirmed");
+			helper.setSubject("Your Pizza Order #" + order.getPublicId() + " is confirmed");
 			helper.setText(buildEmailBody(order), true); // true = HTML
 
 			mailSender.send(message);
@@ -44,7 +44,8 @@ public class EmailService {
 	private String buildEmailBody(Orders order) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<h2>Thank you for your order!</h2>");
-		sb.append("<p><strong>Order ID:</strong> ").append(order.getId()).append("</p>");
+		sb.append("<p><strong>Order ID:</strong> ").append(order.getPublicId()).append("</p>");
+		sb.append("<p><strong>Email:</strong> ").append(order.getEmail()).append("</p>");
 		sb.append("<p><strong>Status:</strong> ").append(order.getStatus()).append("</p>");
 		sb.append("<p><strong>Pickup time:</strong> ").append(order.getPickupTime()).append("</p>");
 		sb.append("<table border='1' cellpadding='5' cellspacing='0'>");

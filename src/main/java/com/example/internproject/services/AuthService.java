@@ -11,7 +11,10 @@ import com.example.internproject.models.User;
 import com.example.internproject.repository.UserRepository;
 import com.example.internproject.security.UserPrincipal;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class AuthService {
 
 	private final AuthenticationManager authManager;
