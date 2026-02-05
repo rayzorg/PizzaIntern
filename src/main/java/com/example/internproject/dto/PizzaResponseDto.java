@@ -4,35 +4,49 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 public class PizzaResponseDto {
-	
-	
 
-    public Long pizzaId;
-    
-    public String name;
-    
-    public BigDecimal price;
-    private boolean available;
-    private String imageUrl;
+	public Long pizzaId;
+	public String name;
+	public BigDecimal price;
+	private boolean available;
+	private String imageUrl;
+	private String description;
+	private Set<String> toppings;
 
-    private String description;
-    private Set<String> toppings;
-
-    
-	public PizzaResponseDto(Long pizzaId, String name,String description,boolean available, BigDecimal price,String imageUrl, Set<String> toppings) {
+	public PizzaResponseDto(Long pizzaId, String name, String description, boolean available, BigDecimal price,
+			String imageUrl, Set<String> toppings) {
 		this.pizzaId = pizzaId;
 		this.name = name;
-		this.description=description;
-		this.available=available;
+		this.description = description;
+		this.available = available;
 		this.price = price;
-		this.imageUrl=imageUrl;
-        this.toppings = toppings;
+		this.imageUrl = imageUrl;
+		this.toppings = toppings;
 	}
-    
-	public Long getId() { return pizzaId; }
-    public String getName() { return name; }
-    public BigDecimal getPrice() { return price; }
-    public Set<String> getToppings() { return toppings; }
+
+	public Long getPizzaId() {
+		return pizzaId;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public Long getId() {
+		return pizzaId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public Set<String> getToppings() {
+		return toppings;
+	}
 
 	public String getImageUrl() {
 		return imageUrl;
@@ -41,7 +55,5 @@ public class PizzaResponseDto {
 	public boolean isAvailable() {
 		return available;
 	}
-
-	
 
 }

@@ -34,7 +34,7 @@ public class AdminController {
 	}
 
 	@PutMapping("orders/{id}/close")
-	public OrderResponse closeOrder(@PathVariable Long id) {
+	public OrderResponse closeOrder(@PathVariable String id) {
 		return orderService.closeOrder(id);
 	}
 

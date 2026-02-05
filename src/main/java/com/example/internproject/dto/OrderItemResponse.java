@@ -38,4 +38,9 @@ public class OrderItemResponse {
 		return price;
 	}
 
+	public Long getPizzaId() {
+		return pizzaId;
+	}
+
+	
 }
