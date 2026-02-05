@@ -88,7 +88,7 @@ public class OrderService {
 						item.getPizza().getName(), item.getSize().name(), item.getQuantity(), item.getPrice()))
 				.toList();
 
-		return new OrderResponse(saved.getPublicId(), saved.getTotalPrice(), saved.getStatus(), saved.getCreatedAt(),
+		return new OrderResponse(saved.getPublicId(),saved.getEmail(), saved.getTotalPrice(), saved.getStatus(), saved.getCreatedAt(),
 				saved.getPickupTime(), itemDtos);
 	}
 
@@ -133,7 +133,7 @@ public class OrderService {
 				.getOrderItems().stream().map(item -> new OrderItemResponse(item.getPizza().getId(),
 						item.getPizza().getName(), item.getSize().name(), item.getQuantity(), item.getPrice()))
 				.toList();
-		OrderResponse dto = new OrderResponse(order.getPublicId(), order.getTotalPrice(), order.getStatus(),
+		OrderResponse dto = new OrderResponse(order.getPublicId(),order.getEmail(), order.getTotalPrice(), order.getStatus(),
 				order.getCreatedAt(), order.getPickupTime(), items);
 
 		return dto;

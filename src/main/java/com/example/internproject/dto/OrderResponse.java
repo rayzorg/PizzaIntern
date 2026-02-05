@@ -8,16 +8,18 @@ import com.example.internproject.models.OrderStatus;
 public class OrderResponse {
 
 	private String id;
+	private String email;
 	private BigDecimal totalPrice;
 	private OrderStatus status;
 	private LocalDateTime createdAt;
 	private LocalDateTime pickupTime;
 	private List<OrderItemResponse> orderItems;
 
-	public OrderResponse(String id, BigDecimal totalPrice, OrderStatus status, LocalDateTime createdAt,
+	public OrderResponse(String id,String email, BigDecimal totalPrice, OrderStatus status, LocalDateTime createdAt,
 			LocalDateTime pickupTime, List<OrderItemResponse> orderItems) {
 
 		this.id = id;
+		this.email=email;
 		this.totalPrice = totalPrice;
 		this.status = status;
 		this.createdAt = createdAt;
@@ -47,6 +49,9 @@ public class OrderResponse {
 
 	public List<OrderItemResponse> getOrderItems() {
 		return orderItems;
+	}
+	public String getEmail() {
+		return email;
 	}
 
 }
