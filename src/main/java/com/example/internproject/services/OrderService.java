@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.example.internproject.dto.AdminViewOrdersDto;
 import com.example.internproject.dto.CreateOrder;
 import com.example.internproject.dto.OrderItemRequest;
 import com.example.internproject.dto.OrderItemResponse;
@@ -23,7 +25,7 @@ import com.example.internproject.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-@Transactional // If anything fails → rollback.
+@Transactional
 public class OrderService {
 
 	private final OrderRepository orderRepository;
@@ -92,8 +94,26 @@ public class OrderService {
 				saved.getCreatedAt(), saved.getPickupTime(), itemDtos);
 	}
 
-	public List<OrderResponse> getAllOrders() {
-		return orderRepository.findAll().stream().map(this::toResponseDto).toList();
+	// admin
+	public List<AdminViewOrdersDto> getAllOrders() {
+		return orderRepository.findAll().stream().map(this::toAdminViewDto).toList();
+	}
+	private AdminViewOrdersDto toAdminViewDto(Orders order) {
+
+	    List<OrderItemResponse> items = order.getOrderItems().stream()
+	        .map(item -> new OrderItemResponse(
+	            item.getPizza().getId(),
+	            item.getPizza().getName(),
+	            item.getSize().name(),
+	            item.getQuantity(),
+	            item.getPrice()
+	        ))
+	        .toList();
+
+	    return new AdminViewOrdersDto(
+	    		order.getId(), order.getEmail(), order.getTotalPrice(),
+				order.getStatus(), order.getCreatedAt(), order.getPickupTime(), items
+	    );
 	}
 
 	@Transactional
@@ -140,6 +160,7 @@ public class OrderService {
 		return dto;
 	}
 
+	// customer
 	public List<OrderSummaryDto> getOrderHistory(Long userId) {
 		return orderRepository.findByUserIdOrderByCreatedAtDesc(userId).stream().map(order -> {
 
@@ -148,8 +169,8 @@ public class OrderService {
 							item.getQuantity(), item.getPrice()))
 					.toList();
 
-			return new OrderSummaryDto(order.getId(), order.getCreatedAt(), order.getTotalPrice(), order.getStatus(),
-					itemDtos);
+			return new OrderSummaryDto(order.getPublicId(), order.getCreatedAt(), order.getTotalPrice(),
+					order.getStatus(), itemDtos);
 		}).toList();
 	}
 

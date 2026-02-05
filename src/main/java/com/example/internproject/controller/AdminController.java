@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.internproject.dto.AdminViewOrdersDto;
 import com.example.internproject.dto.OrderResponse;
 import com.example.internproject.services.OrderService;
 import com.example.internproject.services.PizzaService;
@@ -29,7 +31,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders")
-	public List<OrderResponse> getAllOrders() {
+	public List<AdminViewOrdersDto> getAllOrders() {
 		return orderService.getAllOrders();
 	}
 

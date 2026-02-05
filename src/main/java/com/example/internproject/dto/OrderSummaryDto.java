@@ -7,27 +7,27 @@ import com.example.internproject.models.OrderStatus;
 
 public class OrderSummaryDto {
 
-	    private Long orderId;
+	    private String publicId;
 	    private LocalDateTime createdAt;
 	    private BigDecimal totalPrice;
 	    private OrderStatus status;
 	    private List<OrderItemSummaryDto> orderItems;
 
 	    public OrderSummaryDto(
-	            Long orderId,
+	            String publicId,
 	            LocalDateTime createdAt,
 	            BigDecimal totalPrice,
 	            OrderStatus status,
 	            List<OrderItemSummaryDto> orderItems) {
-	        this.orderId = orderId;
+	        this.publicId = publicId;
 	        this.createdAt = createdAt;
 	        this.totalPrice = totalPrice;
 	        this.status = status;
 	        this.orderItems = orderItems;
 	    }
 
-	    public Long getOrderId() {
-	        return orderId;
+	    public String getPublicId() {
+	        return publicId;
 	    }
 
 	    public LocalDateTime getCreatedAt() {
