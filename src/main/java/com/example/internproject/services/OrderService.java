@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.internproject.dto.AdminViewOrdersDto;
-import com.example.internproject.dto.CreateOrder;
-import com.example.internproject.dto.OrderItemRequest;
-import com.example.internproject.dto.OrderItemResponse;
+import com.example.internproject.dto.PlaceOrderDto;
+import com.example.internproject.dto.OrderItemRequestDto;
+import com.example.internproject.dto.OrderItemResponseDto;
 import com.example.internproject.dto.OrderItemSummaryDto;
-import com.example.internproject.dto.OrderResponse;
-import com.example.internproject.dto.OrderSummaryDto;
+import com.example.internproject.dto.OrderPlacedResponseDto;
+import com.example.internproject.dto.OrderSummaryCustomerDto;
 import com.example.internproject.models.OrderItem;
 import com.example.internproject.models.OrderStatus;
 import com.example.internproject.models.Orders;
@@ -42,7 +42,7 @@ public class OrderService {
 	}
 
 	@Transactional
-	public OrderResponse placeOrder(CreateOrder dto, String userEmail) {
+	public OrderPlacedResponseDto placeOrder(PlaceOrderDto dto, String userEmail) {
 
 		Orders order = new Orders();
 		order.setStatus(OrderStatus.CREATED);
@@ -62,7 +62,7 @@ public class OrderService {
 			order.setUser(user);
 		}
 
-		for (OrderItemRequest itemDto : dto.getItems()) {
+		for (OrderItemRequestDto itemDto : dto.getItems()) {
 
 			Pizza pizza = pizzaRepository.findById(itemDto.getPizzaId())
 					.orElseThrow(() -> new RuntimeException("Pizza not found"));
@@ -85,39 +85,33 @@ public class OrderService {
 
 		sendEmailAndUpdateStatus(saved);
 
-		List<OrderItemResponse> itemDtos = saved
-				.getOrderItems().stream().map(item -> new OrderItemResponse(item.getPizza().getId(),
+		List<OrderItemResponseDto> itemDtos = saved
+				.getOrderItems().stream().map(item -> new OrderItemResponseDto(item.getPizza().getId(),
 						item.getPizza().getName(), item.getSize().name(), item.getQuantity(), item.getPrice()))
 				.toList();
 
-		return new OrderResponse(saved.getPublicId(), saved.getEmail(), saved.getTotalPrice(), saved.getStatus(),
-				saved.getCreatedAt(), saved.getPickupTime(), itemDtos);
+		return new OrderPlacedResponseDto(saved.getPublicId(), saved.getEmail(), saved.getTotalPrice(),
+				saved.getStatus(), saved.getCreatedAt(), saved.getPickupTime(), itemDtos);
 	}
 
 	// admin
-	public List<AdminViewOrdersDto> getAllOrders() {
+	public List<AdminViewOrdersDto> getAllOrdersForAdmin() {
 		return orderRepository.findAll().stream().map(this::toAdminViewDto).toList();
 	}
+
 	private AdminViewOrdersDto toAdminViewDto(Orders order) {
 
-	    List<OrderItemResponse> items = order.getOrderItems().stream()
-	        .map(item -> new OrderItemResponse(
-	            item.getPizza().getId(),
-	            item.getPizza().getName(),
-	            item.getSize().name(),
-	            item.getQuantity(),
-	            item.getPrice()
-	        ))
-	        .toList();
+		List<OrderItemResponseDto> items = order
+				.getOrderItems().stream().map(item -> new OrderItemResponseDto(item.getPizza().getId(),
+						item.getPizza().getName(), item.getSize().name(), item.getQuantity(), item.getPrice()))
+				.toList();
 
-	    return new AdminViewOrdersDto(
-	    		order.getId(), order.getEmail(), order.getTotalPrice(),
-				order.getStatus(), order.getCreatedAt(), order.getPickupTime(), items
-	    );
+		return new AdminViewOrdersDto(order.getId(), order.getEmail(), order.getTotalPrice(), order.getStatus(),
+				order.getCreatedAt(), order.getPickupTime(), items);
 	}
 
 	@Transactional
-	public OrderResponse closeOrder(String orderId) {
+	public OrderPlacedResponseDto closeOrder(String orderId) {
 
 		Orders order = orderRepository.findByPublicId(orderId)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
@@ -148,20 +142,20 @@ public class OrderService {
 		}
 	}
 
-	private OrderResponse toResponseDto(Orders order) {
+	private OrderPlacedResponseDto toResponseDto(Orders order) {
 
-		List<OrderItemResponse> items = order
-				.getOrderItems().stream().map(item -> new OrderItemResponse(item.getPizza().getId(),
+		List<OrderItemResponseDto> items = order
+				.getOrderItems().stream().map(item -> new OrderItemResponseDto(item.getPizza().getId(),
 						item.getPizza().getName(), item.getSize().name(), item.getQuantity(), item.getPrice()))
 				.toList();
-		OrderResponse dto = new OrderResponse(order.getPublicId(), order.getEmail(), order.getTotalPrice(),
-				order.getStatus(), order.getCreatedAt(), order.getPickupTime(), items);
+		OrderPlacedResponseDto dto = new OrderPlacedResponseDto(order.getPublicId(), order.getEmail(),
+				order.getTotalPrice(), order.getStatus(), order.getCreatedAt(), order.getPickupTime(), items);
 
 		return dto;
 	}
 
 	// customer
-	public List<OrderSummaryDto> getOrderHistory(Long userId) {
+	public List<OrderSummaryCustomerDto> getOrderHistoryForCustomer(Long userId) {
 		return orderRepository.findByUserIdOrderByCreatedAtDesc(userId).stream().map(order -> {
 
 			List<OrderItemSummaryDto> itemDtos = order.getOrderItems().stream()
@@ -169,12 +163,12 @@ public class OrderService {
 							item.getQuantity(), item.getPrice()))
 					.toList();
 
-			return new OrderSummaryDto(order.getPublicId(), order.getCreatedAt(), order.getTotalPrice(),
+			return new OrderSummaryCustomerDto(order.getPublicId(), order.getCreatedAt(), order.getTotalPrice(),
 					order.getStatus(), itemDtos);
 		}).toList();
 	}
 
-	public OrderResponse getOrder(String publicId, User user) {
+	public OrderPlacedResponseDto getOrderWhenPlaced(String publicId, User user) {
 
 		Orders order = orderRepository.findByPublicIdAndUserId(publicId, user.getId())
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));

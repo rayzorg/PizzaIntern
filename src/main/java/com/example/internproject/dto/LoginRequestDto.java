@@ -3,7 +3,7 @@ package com.example.internproject.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
-public class LoginRequest {
+public class LoginRequestDto {
 
 	@NotEmpty
 	@Email(message = "Email must be valid")
@@ -11,7 +11,7 @@ public class LoginRequest {
 	@NotEmpty
 	private String password;
 
-	public LoginRequest() {
+	public LoginRequestDto() {
 	}
 
 	public String getEmail() {

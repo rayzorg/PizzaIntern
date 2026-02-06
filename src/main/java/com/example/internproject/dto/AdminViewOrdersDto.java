@@ -3,7 +3,6 @@ package com.example.internproject.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import com.example.internproject.models.OrderStatus;
 
 public class AdminViewOrdersDto {
@@ -13,10 +12,10 @@ public class AdminViewOrdersDto {
 	private OrderStatus status;
 	private LocalDateTime createdAt;
 	private LocalDateTime pickupTime;
-	private List<OrderItemResponse> orderItems;
+	private List<OrderItemResponseDto> orderItems;
 
 	public AdminViewOrdersDto(Long orderId, String email, BigDecimal totalPrice, OrderStatus status,
-			LocalDateTime createdAt, LocalDateTime pickupTime, List<OrderItemResponse> orderItems) {
+			LocalDateTime createdAt, LocalDateTime pickupTime, List<OrderItemResponseDto> orderItems) {
 		this.orderId = orderId;
 		this.email = email;
 		this.totalPrice = totalPrice;
@@ -46,7 +45,7 @@ public class AdminViewOrdersDto {
 		return pickupTime;
 	}
 
-	public List<OrderItemResponse> getOrderItems() {
+	public List<OrderItemResponseDto> getOrderItems() {
 		return orderItems;
 	}
 

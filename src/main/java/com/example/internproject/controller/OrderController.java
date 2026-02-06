@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.internproject.dto.CreateOrder;
-import com.example.internproject.dto.OrderResponse;
-import com.example.internproject.dto.OrderSummaryDto;
+import com.example.internproject.dto.PlaceOrderDto;
+import com.example.internproject.dto.OrderPlacedResponseDto;
+import com.example.internproject.dto.OrderSummaryCustomerDto;
 import com.example.internproject.models.User;
 import com.example.internproject.services.OrderService;
 import jakarta.validation.Valid;
@@ -32,25 +32,25 @@ public class OrderController {
 
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping
-	public ResponseEntity<OrderResponse> placeOrder(@Valid @RequestBody CreateOrder dto,
+	public ResponseEntity<OrderPlacedResponseDto> placeOrder(@Valid @RequestBody PlaceOrderDto dto,
 			@AuthenticationPrincipal User user) {
 		String email = (user != null) ? user.getEmail() : null;
-		OrderResponse response = orderService.placeOrder(dto, email);
+		OrderPlacedResponseDto response = orderService.placeOrder(dto, email);
 
 		return ResponseEntity.ok(response);
 	}
 
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("/myorders")
-	public List<OrderSummaryDto> getMyOrders(Authentication authentication) {
+	public List<OrderSummaryCustomerDto> getMyOrders(Authentication authentication) {
 		User user = (User) authentication.getPrincipal();
-		return orderService.getOrderHistory(user.getId());
+		return orderService.getOrderHistoryForCustomer(user.getId());
 	}
 
 	@PreAuthorize("hasRole('CUSTOMER')")
-	@GetMapping("/{orderId}")
-	public OrderResponse getOrder(@PathVariable String orderId, @AuthenticationPrincipal User user) {
-		return orderService.getOrder(orderId, user);
+	@GetMapping("/{publicId}")
+	public OrderPlacedResponseDto getOrderWhenPlaced(@PathVariable String publicId, @AuthenticationPrincipal User user) {
+		return orderService.getOrderWhenPlaced(publicId, user);
 	}
 
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import com.example.internproject.models.OrderStatus;
 
-public class OrderSummaryDto {
+public class OrderSummaryCustomerDto {
 
 	    private String publicId;
 	    private LocalDateTime createdAt;
@@ -13,7 +13,7 @@ public class OrderSummaryDto {
 	    private OrderStatus status;
 	    private List<OrderItemSummaryDto> orderItems;
 
-	    public OrderSummaryDto(
+	    public OrderSummaryCustomerDto(
 	            String publicId,
 	            LocalDateTime createdAt,
 	            BigDecimal totalPrice,

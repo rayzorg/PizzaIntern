@@ -8,7 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.example.internproject.dto.OrderItemResponse;
+import com.example.internproject.dto.OrderItemResponseDto;
 import com.example.internproject.models.Orders;
 
 import jakarta.mail.MessagingException;
@@ -51,12 +51,12 @@ public class EmailService {
 		sb.append("<table border='1' cellpadding='5' cellspacing='0'>");
 		sb.append("<thead><tr><th>Pizza</th><th>Size</th><th>Qty</th><th>Price</th></tr></thead><tbody>");
 
-		List<OrderItemResponse> items = order.getOrderItems().stream()
-				.map(i -> new OrderItemResponse(i.getPizza().getId(), i.getPizza().getName(), i.getSize().name(),
+		List<OrderItemResponseDto> items = order.getOrderItems().stream()
+				.map(i -> new OrderItemResponseDto(i.getPizza().getId(), i.getPizza().getName(), i.getSize().name(),
 						i.getQuantity(), i.getPrice()))
 				.toList();
 
-		for (OrderItemResponse item : items) {
+		for (OrderItemResponseDto item : items) {
 			BigDecimal rowTotal = item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
 			sb.append("<tr>").append("<td>").append(item.getPizzaName()).append("</td>").append("<td>")
 					.append(item.getSize()).append("</td>").append("<td>").append(item.getQuantity()).append("</td>")

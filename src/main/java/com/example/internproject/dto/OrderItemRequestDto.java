@@ -4,7 +4,7 @@ import com.example.internproject.models.Size;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public class OrderItemRequest {
+public class OrderItemRequestDto {
 	
 
 	@NotNull
@@ -14,7 +14,7 @@ public class OrderItemRequest {
 	@Min(1)
     private int quantity;
 
-   public OrderItemRequest() {
+   public OrderItemRequestDto() {
 	   
    }
 

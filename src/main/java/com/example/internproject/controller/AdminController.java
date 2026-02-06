@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.internproject.dto.AdminViewOrdersDto;
-import com.example.internproject.dto.OrderResponse;
+import com.example.internproject.dto.OrderPlacedResponseDto;
 import com.example.internproject.services.OrderService;
 import com.example.internproject.services.PizzaService;
 
@@ -31,12 +31,12 @@ public class AdminController {
 	}
 
 	@GetMapping("/orders")
-	public List<AdminViewOrdersDto> getAllOrders() {
-		return orderService.getAllOrders();
+	public List<AdminViewOrdersDto> getAllOrdersForAdmin() {
+		return orderService.getAllOrdersForAdmin();
 	}
 
 	@PutMapping("orders/{id}/close")
-	public OrderResponse closeOrder(@PathVariable String id) {
+	public OrderPlacedResponseDto closeOrder(@PathVariable String id) {
 		return orderService.closeOrder(id);
 	}
 

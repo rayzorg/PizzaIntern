@@ -2,9 +2,9 @@ package com.example.internproject.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.example.internproject.dto.LoginRequest;
-import com.example.internproject.dto.LoginResponse;
-import com.example.internproject.dto.RegisterRequest;
+import com.example.internproject.dto.LoginRequestDto;
+import com.example.internproject.dto.LoginResponseDto;
+import com.example.internproject.dto.RegisterRequestDto;
 import com.example.internproject.models.Role;
 import com.example.internproject.models.User;
 import com.example.internproject.services.AuthService;
@@ -25,17 +25,17 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+	public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto request) {
 		String token = authService.login(request.getEmail(), request.getPassword());
-		return ResponseEntity.ok(new LoginResponse(token));
+		return ResponseEntity.ok(new LoginResponseDto(token));
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<LoginResponse> register(@RequestBody @Valid RegisterRequest request) {
+	public ResponseEntity<LoginResponseDto> register(@RequestBody @Valid RegisterRequestDto request) {
 		User user = authService.register(request.getName(), request.getEmail(), request.getPassword(),
 				request.getPhoneNumber(), Role.CUSTOMER);
 
 		String token = jwtService.generateToken(user.getEmail(), user.getRole(),user.getName());
-		return ResponseEntity.ok(new LoginResponse(token));
+		return ResponseEntity.ok(new LoginResponseDto(token));
 	}
 }

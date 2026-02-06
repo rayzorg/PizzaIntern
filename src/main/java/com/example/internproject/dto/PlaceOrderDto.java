@@ -7,11 +7,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 
-public class CreateOrder {
+public class PlaceOrderDto {
 
 	@NotEmpty
 	@Valid
-	private List<OrderItemRequest> items;
+	private List<OrderItemRequestDto> items;
 
 	@FutureOrPresent(message = "Pickup time cannot be in the past")
 	private LocalDateTime pickupTime;
@@ -20,10 +20,10 @@ public class CreateOrder {
 	@Email(message = "Email must be valid")
 	private String email;
 
-	public CreateOrder() {
+	public PlaceOrderDto() {
 	}
 
-	public CreateOrder(@NotEmpty @Valid List<OrderItemRequest> items,
+	public PlaceOrderDto(@NotEmpty @Valid List<OrderItemRequestDto> items,
 			@FutureOrPresent(message = "Pickup time cannot be in the past") LocalDateTime pickupTime,
 			@NotEmpty @Email(message = "Email must be valid") String email) {
 		super();
@@ -32,11 +32,11 @@ public class CreateOrder {
 		this.email = email;
 	}
 
-	public List<OrderItemRequest> getItems() {
+	public List<OrderItemRequestDto> getItems() {
 		return items;
 	}
 
-	public void setItems(List<OrderItemRequest> items) {
+	public void setItems(List<OrderItemRequestDto> items) {
 		this.items = items;
 	}
 

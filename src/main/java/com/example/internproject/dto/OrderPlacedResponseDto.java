@@ -5,20 +5,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 import com.example.internproject.models.OrderStatus;
 
-public class OrderResponse {
+public class OrderPlacedResponseDto {
 
-	private String id;
+	private String publicId;
 	private String email;
 	private BigDecimal totalPrice;
 	private OrderStatus status;
 	private LocalDateTime createdAt;
 	private LocalDateTime pickupTime;
-	private List<OrderItemResponse> orderItems;
+	private List<OrderItemResponseDto> orderItems;
 
-	public OrderResponse(String id,String email, BigDecimal totalPrice, OrderStatus status, LocalDateTime createdAt,
-			LocalDateTime pickupTime, List<OrderItemResponse> orderItems) {
+	public OrderPlacedResponseDto(String publicId,String email, BigDecimal totalPrice, OrderStatus status, LocalDateTime createdAt,
+			LocalDateTime pickupTime, List<OrderItemResponseDto> orderItems) {
 
-		this.id = id;
+		this.publicId = publicId;
 		this.email=email;
 		this.totalPrice = totalPrice;
 		this.status = status;
@@ -27,8 +27,8 @@ public class OrderResponse {
 		this.orderItems = orderItems;
 	}
 
-	public String getOrderId() {
-		return id;
+	public String getPublicId() {
+		return publicId;
 	}
 
 	public BigDecimal getTotalPrice() {
@@ -47,7 +47,7 @@ public class OrderResponse {
 		return pickupTime;
 	}
 
-	public List<OrderItemResponse> getOrderItems() {
+	public List<OrderItemResponseDto> getOrderItems() {
 		return orderItems;
 	}
 	public String getEmail() {

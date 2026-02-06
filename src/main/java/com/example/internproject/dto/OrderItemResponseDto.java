@@ -2,7 +2,7 @@ package com.example.internproject.dto;
 
 import java.math.BigDecimal;
 
-public class OrderItemResponse {
+public class OrderItemResponseDto {
 
 	private Long pizzaId;
 	private String pizzaName;
@@ -10,10 +10,10 @@ public class OrderItemResponse {
 	private int quantity;
 	private BigDecimal price;
 
-	public OrderItemResponse() {
+	public OrderItemResponseDto() {
 	}
 
-	public OrderItemResponse(Long pizzaId, String pizzaName, String size, int quantity, BigDecimal price) {
+	public OrderItemResponseDto(Long pizzaId, String pizzaName, String size, int quantity, BigDecimal price) {
 
 		this.pizzaId = pizzaId;
 		this.pizzaName = pizzaName;
