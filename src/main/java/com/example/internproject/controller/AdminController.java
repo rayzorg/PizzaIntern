@@ -35,9 +35,9 @@ public class AdminController {
 		return orderService.getAllOrdersForAdmin();
 	}
 
-	@PutMapping("orders/{id}/close")
-	public OrderPlacedResponseDto closeOrder(@PathVariable String id) {
-		return orderService.closeOrder(id);
+	@PutMapping("orders/{orderId}/close")
+	public OrderPlacedResponseDto closeOrder(@PathVariable Long orderId) {
+		return orderService.closeOrder(orderId);
 	}
 
 	@PutMapping("/pizzas/{id}/availability")

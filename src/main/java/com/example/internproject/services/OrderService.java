@@ -111,9 +111,9 @@ public class OrderService {
 	}
 
 	@Transactional
-	public OrderPlacedResponseDto closeOrder(String orderId) {
+	public OrderPlacedResponseDto closeOrder(Long orderId) {
 
-		Orders order = orderRepository.findByPublicId(orderId)
+		Orders order = orderRepository.findById(orderId)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
 
 		if (order.getStatus() != OrderStatus.PREPARING) {
