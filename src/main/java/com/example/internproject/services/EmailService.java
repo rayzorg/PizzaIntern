@@ -8,6 +8,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.example.internproject.dto.ContactFormDto;
 import com.example.internproject.dto.OrderItemResponseDto;
 import com.example.internproject.models.Orders;
 
@@ -73,5 +74,30 @@ public class EmailService {
 
 		sb.append("<p>Enjoy your pizza!</p>");
 		return sb.toString();
+	}
+
+	@Async
+	public void sendContactEmail(ContactFormDto form) {
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+			helper.setTo("ttestone40@gmail.com"); // where the emails should go
+			helper.setSubject("Contact Form: message from " + form.getName());
+
+			StringBuilder body = new StringBuilder();
+			body.append("Name: ").append(form.getName()).append("\n");
+			body.append("Email: ").append(form.getEmail()).append("\n");
+			body.append("Subject: ").append(form.getSubject()).append("\n");
+			body.append("Phone: ").append(form.getPhoneNumber()).append("\n\n");
+			body.append("Message:\n").append(form.getMessage());
+
+			helper.setText(body.toString(), false); // false = plain text
+
+			mailSender.send(message);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to send contact email");
+		}
 	}
 }
