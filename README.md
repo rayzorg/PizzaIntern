@@ -77,4 +77,27 @@ spring.mail.password=         # Email account password or app-specific password
 # JWT (Security)
 jwt.secret=                   # Secret key used to sign and validate JWT tokens
 
-``` 
+```
+---
+## Activating the `dev` Spring Profile in Eclipse
+
+To run the application with the **`dev`** profile in **Eclipse**, follow these steps:
+
+1. Right-click the project in Eclipse
+2. Select **Run As → Run Configurations…**
+3. In the left menu, select **Spring Boot App**
+4. Choose your application configuration
+5. Open the **Arguments** tab
+6. In the **VM arguments** field, add: -Dspring.profiles.active=dev
+7. Click **Apply**
+8. Click **Run**
+
+When the application starts, Spring will:
+1. Load `application.properties`
+2. Then load `application-dev.properties`
+
+You can verify this in the console output: The following profiles are active: dev
+
+
+
+
