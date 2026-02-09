@@ -26,8 +26,8 @@ The application uses the standard Spring Boot configuration mechanism:
 
 The following configuration keys are required by the application:
 
-### Database
 ```properties
+### Database
 spring.datasource.url=
 spring.datasource.username=
 spring.datasource.password=
