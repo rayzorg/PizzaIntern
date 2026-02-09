@@ -56,7 +56,7 @@ jwt.expiration=3600000 # JWT expiration time in milliseconds (e.g. 1 hour)
 
 ``` 
 
-## application-dev.properties
+## 📄 application-dev.properties (non-committed)
 
 For the active **`dev`** Spring profile, the following properties **must be defined with actual values**
 in `application-dev.properties`.
