@@ -27,7 +27,7 @@ The application uses the standard Spring Boot configuration mechanism:
 The following configuration keys are required by the application:
 
 ### Database
-
+```properties
 spring.datasource.url=
 spring.datasource.username=
 spring.datasource.password=
@@ -36,7 +36,7 @@ spring.jpa.hibernate.ddl-auto=
 spring.jpa.properties.hibernate.format_sql=
 spring.jpa.database-platform=
 
-### Database
+### Email
 
 spring.mail.host=
 spring.mail.port=
