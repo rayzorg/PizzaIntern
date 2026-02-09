@@ -29,26 +29,75 @@ The following configuration keys are required by the application:
 ```properties
 
 ### Database
-spring.datasource.url=
-spring.datasource.username=
-spring.datasource.password=
 
-spring.jpa.hibernate.ddl-auto=
-spring.jpa.properties.hibernate.format_sql=
-spring.jpa.database-platform=
+spring.datasource.url=        # JDBC URL of the database (host, port, database name)
+spring.datasource.username=   # Username used to connect to the database
+spring.datasource.password=   # Password used to connect to the database
 
-### Email
+spring.jpa.hibernate.ddl-auto=update   # Defines how Hibernate handles database schema updates
+spring.jpa.properties.hibernate.format_sql=true  # Formats SQL queries in the logs for readability
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect  # Hibernate dialect for MySQL
 
-spring.mail.host=
-spring.mail.port=
-spring.mail.username=
-spring.mail.password=
-spring.mail.properties.mail.smtp.auth=
-spring.mail.properties.mail.smtp.starttls.enable=
-spring.mail.properties.mail.smtp.starttls.required=
 
-### JWT
+### Email (sending an email when placing an order and when contacting)
 
-jwt.secret=
-jwt.expiration=
+spring.mail.host=smtp.gmail.com        # SMTP server used for sending emails
+spring.mail.port=587                   # SMTP port (587 for TLS)
+spring.mail.username=                  # Email account username used for authentication
+spring.mail.password=                  # Email account password or app-specific password
+spring.mail.properties.mail.smtp.auth=true              # Enables SMTP authentication
+spring.mail.properties.mail.smtp.starttls.enable=true   # Enables STARTTLS encryption
+spring.mail.properties.mail.smtp.starttls.required=true # Requires STARTTLS to be used
+
+### JWT (for authenticaten and authorization)
+
+jwt.secret=            # Secret key used to sign and validate JWT tokens
+jwt.expiration=3600000 # JWT expiration time in milliseconds (e.g. 1 hour)
+
+``` 
+
+## 📄 application-dev.properties (non-committed)
+
+For the active **`dev`** Spring profile, the following properties **must be defined with actual values**
+in `application-dev.properties`.
+
+These properties are intentionally **not set** in `application.properties` because they contain
+**environment-specific or sensitive information**.
+
+```properties
+# Database
+spring.datasource.url=        # JDBC URL of the development database
+spring.datasource.username=   # Database username for the dev environment
+spring.datasource.password=   # Database password for the dev environment
+
+# Email (SMTP)
+spring.mail.username=         # Email account username used to send emails
+spring.mail.password=         # Email account password or app-specific password
+
+# JWT (Security)
+jwt.secret=                   # Secret key used to sign and validate JWT tokens
+
+```
+---
+## Activating the `dev` Spring Profile in Eclipse
+
+To run the application with the **`dev`** profile in **Eclipse**, follow these steps:
+
+1. Right-click the project in Eclipse
+2. Select **Run As → Run Configurations…**
+3. In the left menu, select **Spring Boot App**
+4. Choose your application configuration
+5. Open the **Arguments** tab
+6. In the **VM arguments** field, add: -Dspring.profiles.active=dev
+7. Click **Apply**
+8. Click **Run**
+
+When the application starts, Spring will:
+1. Load `application.properties`
+2. Then load `application-dev.properties`
+
+You can verify this in the console output: The following profiles are active: dev
+
+
+
 
