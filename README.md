@@ -98,6 +98,33 @@ When the application starts, Spring will:
 
 You can verify this in the console output: The following profiles are active: dev
 
+## Configuration Guide
+
+This section explains how to configure the application components that require
+environment-specific or sensitive values.  
+All sensitive configuration must be placed in the active Spring profile
+(e.g. `application-dev.properties`) and must **not** be committed to the repository.
+
+In the dev profile, spring.jpa.hibernate.ddl-auto=update is used
+Seed data is automatically inserted on first startup
+
+---
+
+## Database Configuration
+
+The application uses a relational database (MySQL).
+
+### Required steps:
+1. Create a local MySQL database (e.g. `internproject`)
+2. Create a database user with access to this database
+3. Configure the following properties in `application-dev.properties`:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/internproject
+spring.datasource.username=your_db_user
+spring.datasource.password=your_db_password
+
+
 
 
 
