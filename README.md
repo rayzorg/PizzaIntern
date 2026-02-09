@@ -29,26 +29,28 @@ The following configuration keys are required by the application:
 ```properties
 
 ### Database
-spring.datasource.url=
-spring.datasource.username=
-spring.datasource.password=
 
-spring.jpa.hibernate.ddl-auto=
-spring.jpa.properties.hibernate.format_sql=
-spring.jpa.database-platform=
+spring.datasource.url=        # JDBC URL of the database (host, port, database name)
+spring.datasource.username=   # Username used to connect to the database
+spring.datasource.password=   # Password used to connect to the database
 
-### Email
+spring.jpa.hibernate.ddl-auto=update   # Defines how Hibernate handles database schema updates
+spring.jpa.properties.hibernate.format_sql=true  # Formats SQL queries in the logs for readability
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect  # Hibernate dialect for MySQL
 
-spring.mail.host=
-spring.mail.port=
-spring.mail.username=
-spring.mail.password=
-spring.mail.properties.mail.smtp.auth=
-spring.mail.properties.mail.smtp.starttls.enable=
-spring.mail.properties.mail.smtp.starttls.required=
 
-### JWT
+### Email (sending an email when placing an order and when contacting)
 
-jwt.secret=
-jwt.expiration=
+spring.mail.host=smtp.gmail.com        # SMTP server used for sending emails
+spring.mail.port=587                   # SMTP port (587 for TLS)
+spring.mail.username=                  # Email account username used for authentication
+spring.mail.password=                  # Email account password or app-specific password
+spring.mail.properties.mail.smtp.auth=true              # Enables SMTP authentication
+spring.mail.properties.mail.smtp.starttls.enable=true   # Enables STARTTLS encryption
+spring.mail.properties.mail.smtp.starttls.required=true # Requires STARTTLS to be used
+
+### JWT (for authenticaten and authorization)
+
+jwt.secret=            # Secret key used to sign and validate JWT tokens
+jwt.expiration=3600000 # JWT expiration time in milliseconds (e.g. 1 hour)
 
