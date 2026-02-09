@@ -54,3 +54,27 @@ spring.mail.properties.mail.smtp.starttls.required=true # Requires STARTTLS to b
 jwt.secret=            # Secret key used to sign and validate JWT tokens
 jwt.expiration=3600000 # JWT expiration time in milliseconds (e.g. 1 hour)
 
+---
+
+## application-dev.properties
+
+For the active **`dev`** Spring profile, the following properties **must be defined with actual values**
+in `application-dev.properties`.
+
+These properties are intentionally **not set** in `application.properties` because they contain
+**environment-specific or sensitive information**.
+
+```properties
+# Database
+spring.datasource.url=        # JDBC URL of the development database
+spring.datasource.username=   # Database username for the dev environment
+spring.datasource.password=   # Database password for the dev environment
+
+# Email (SMTP)
+spring.mail.username=         # Email account username used to send emails
+spring.mail.password=         # Email account password or app-specific password
+
+# JWT (Security)
+jwt.secret=                   # Secret key used to sign and validate JWT tokens
+
+
