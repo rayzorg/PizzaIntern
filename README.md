@@ -54,7 +54,7 @@ spring.mail.properties.mail.smtp.starttls.required=true # Requires STARTTLS to b
 jwt.secret=            # Secret key used to sign and validate JWT tokens
 jwt.expiration=3600000 # JWT expiration time in milliseconds (e.g. 1 hour)
 
----
+``` 
 
 ## application-dev.properties
 
@@ -77,4 +77,4 @@ spring.mail.password=         # Email account password or app-specific password
 # JWT (Security)
 jwt.secret=                   # Secret key used to sign and validate JWT tokens
 
-
+``` 
