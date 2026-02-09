@@ -19,3 +19,35 @@ The application uses the standard Spring Boot configuration mechanism:
   Spring will always:
 1. Load `application.properties`
 2. Then override/extend it with `application-<profile>.properties` if a profile is active
+
+---
+
+## 📄 application.properties (committed)
+
+The following configuration keys are required by the application:
+
+### Database
+
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+spring.jpa.hibernate.ddl-auto=
+spring.jpa.properties.hibernate.format_sql=
+spring.jpa.database-platform=
+
+### Database
+
+spring.mail.host=
+spring.mail.port=
+spring.mail.username=
+spring.mail.password=
+spring.mail.properties.mail.smtp.auth=
+spring.mail.properties.mail.smtp.starttls.enable=
+spring.mail.properties.mail.smtp.starttls.required=
+
+### JWT
+
+jwt.secret=
+jwt.expiration=
+
