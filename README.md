@@ -123,8 +123,30 @@ The application uses a relational database (MySQL).
 spring.datasource.url=jdbc:mysql://localhost:3306/internproject
 spring.datasource.username=your_db_user
 spring.datasource.password=your_db_password
+```
+## Email Configuration
 
+The application sends emails using an SMTP server (e.g. Gmail).
 
+### Required steps:
+1. Choose Gmail as SMTP provider
+2. Generate an app-specific password (2FA should be enabled on the account)
+3. Configure the following properties in application-dev.properties:
 
+```properties
+spring.mail.username=your_email@example.com
+spring.mail.password=your_email_app_password
+```
+## JWT Configuration
+
+The application uses JSON Web Tokens (JWT) for authentication and authorization.
+
+### Required steps:
+1. Generate a secure random secret key
+2. Configure the JWT properties in application-dev.properties:
+
+```properties
+jwt.secret=your-very-secure-random-secret
+```
 
 
