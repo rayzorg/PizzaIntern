@@ -106,7 +106,7 @@ All sensitive configuration must be placed in the active Spring profile
 (e.g. `application-dev.properties`) and must **not** be committed to the repository.
 
 In the dev profile, spring.jpa.hibernate.ddl-auto=update is used
-Seed data is automatically inserted on first startup
+ and Seed data is automatically inserted on first startup
 
 ---
 
