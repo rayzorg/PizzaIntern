@@ -149,4 +149,55 @@ The application uses JSON Web Tokens (JWT) for authentication and authorization.
 jwt.secret=your-very-secure-random-secret
 ```
 
+## Running the Application
+
+This project consists of:
+- A **Spring Boot backend** (REST API)
+- An **Angular frontend**
+
+Both applications must be running for the system to work correctly.
+
+---
+
+## Backend – Spring Boot (API)
+
+### Prerequisites
+- Java 17 (or the version required by the project)
+- Maven
+- MySQL
+- Eclipse (recommended)
+
+### Steps to run the backend:
+1. Clone the repository
+2. Open the project in **Eclipse**
+3. Create `application-dev.properties` in: src/main/resources
+4. Configure database, email, and JWT properties (see Configuration Guide)
+5. Open **Run Configurations**
+6. Select **Spring Boot App**
+7. Add the following **VM argument**: -Dspring.profiles.active=dev
+8. Click **Run**
+
+The backend will start on: http://localhost:8080
+
+
+On first startup:
+- Database schema is created/updated
+- Development seed data is automatically inserted
+
+---
+
+## Frontend – Angular
+
+### Prerequisites
+- Node.js (LTS version recommended)
+- npm
+- Angular CLI
+
+Install Angular CLI if not already installed:
+```bash
+npm install -g @angular/cli
+
+
+
+
 
