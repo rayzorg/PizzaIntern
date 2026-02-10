@@ -162,7 +162,7 @@ Both applications must be running for the system to work correctly.
 ## Backend – Spring Boot (API)
 
 ### Prerequisites
-- Java 17 (or the version required by the project)
+- Java 25
 - Maven
 - MySQL
 - Eclipse (recommended)
