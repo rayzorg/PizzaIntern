@@ -192,10 +192,20 @@ On first startup:
 - Node.js (LTS version recommended)
 - npm
 - Angular CLI
+- Visual studio code
 
 Install Angular CLI if not already installed:
 ```bash
 npm install -g @angular/cli
+```
+### Steps to run the frontend
+1. Clone the frontend repository
+2. Open the project in VS Code
+3. Install dependencies: npm install
+4. Start the Angular development server: ng serve
+
+The frontend will be available at: http://localhost:4200
+
 
 
 
