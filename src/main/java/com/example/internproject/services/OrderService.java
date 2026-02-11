@@ -44,15 +44,15 @@ public class OrderService {
 	@Transactional
 	public OrderPlacedResponseDto placeOrder(PlaceOrderDto dto, String userEmail) {
 
+		if (userEmail == null) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must be logged in to place an order");
+		}
 		Orders order = new Orders();
 		order.setStatus(OrderStatus.CREATED);
 		order.setCreatedAt(LocalDateTime.now());
 		order.setPickupTime(dto.getPickupTime());
-		order.setEmail(dto.getEmail());
+		order.setEmail(userEmail);
 
-		if (dto.getEmail() == null) {
-			throw new RuntimeException("email is empty");
-		}
 		if (dto.getPickupTime().isBefore(LocalDateTime.now())) {
 			throw new IllegalArgumentException("pickup time cannot be in the past");
 		}

@@ -34,8 +34,8 @@ public class OrderController {
 	@PostMapping
 	public ResponseEntity<OrderPlacedResponseDto> placeOrder(@Valid @RequestBody PlaceOrderDto dto,
 			@AuthenticationPrincipal User user) {
-		String email = (user != null) ? user.getEmail() : null;
-		OrderPlacedResponseDto response = orderService.placeOrder(dto, email);
+		dto.setEmail(user.getEmail());
+		OrderPlacedResponseDto response = orderService.placeOrder(dto, user.getEmail());
 
 		return ResponseEntity.ok(response);
 	}

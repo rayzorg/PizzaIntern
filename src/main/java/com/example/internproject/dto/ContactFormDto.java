@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 public class ContactFormDto {
 	@NotBlank(message = "Name is required")
-
 	private String name;
 	@NotBlank(message = "Email is required")
 	@Email(message = "Email must be valid")
