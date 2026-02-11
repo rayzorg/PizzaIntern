@@ -42,7 +42,7 @@ public class SecurityConfigPw {
 		http.cors(cors -> cors.configurationSource(corsConfigurationSource())).csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll().requestMatchers("/api/pizzas/**")
-						.permitAll().requestMatchers("/api/toppings/**").permitAll().requestMatchers("/api/orders/**")
+						.permitAll().requestMatchers("/api/toppings/**").permitAll().requestMatchers("/api/contact/**").permitAll().requestMatchers("/api/orders/**")
 						.authenticated().requestMatchers("/api/admin/**").hasRole("ADMIN").anyRequest().authenticated()
 
 				).exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> {
