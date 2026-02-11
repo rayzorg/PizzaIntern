@@ -35,7 +35,7 @@ public class AuthService {
 		try {
 			auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 		} catch (BadCredentialsException e) {
-			throw new RuntimeException("Invalid email or password");
+			throw new BadCredentialsException("Invalid email or password");
 		}
 
 		UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
