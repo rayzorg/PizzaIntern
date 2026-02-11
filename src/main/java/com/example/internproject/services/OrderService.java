@@ -135,9 +135,7 @@ public class OrderService {
 			emailService.sendOrderConfirmation(order);
 
 		} catch (Exception e) {
-
 			// order stays CREATED
-			System.err.println("Email failed for order " + order.getId());
 			e.printStackTrace();
 		}
 	}

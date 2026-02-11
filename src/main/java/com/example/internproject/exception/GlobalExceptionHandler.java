@@ -56,7 +56,6 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public List<String> handleGeneralException(Exception ex) {
-		// optionally log ex for debugging
 		ex.printStackTrace();
 		return List.of("An unexpected error occurred: " + ex.getMessage());
 	}
