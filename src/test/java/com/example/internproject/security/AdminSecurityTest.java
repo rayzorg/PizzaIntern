@@ -1,4 +1,4 @@
-package com.example.internproject.controllers;
+package com.example.internproject.security;
 
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = true)
-class AdminControllerTest {
+class AdminSecurityTest {
 
 	@Autowired
 	private MockMvc mockMvc;

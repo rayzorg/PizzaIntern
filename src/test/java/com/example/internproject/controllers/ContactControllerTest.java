@@ -1,4 +1,4 @@
-package com.example.internproject.security;
+package com.example.internproject.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ContactController.class)
-public class ContactServiceTest {
+public class ContactControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
