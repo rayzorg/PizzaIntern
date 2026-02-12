@@ -1,5 +1,7 @@
 package com.example.internproject.controllers;
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -111,7 +113,7 @@ class AdminControllerTest {
 
 		verify(orderService, never()).closeOrder(orderId);
 	}
-	
+
 	@Test
 	void givenGuest_whenCloseOrder_thenAccessDenied() throws Exception {
 		Long orderId = 1L;
@@ -126,6 +128,34 @@ class AdminControllerTest {
 				.andExpect(status().isUnauthorized());
 
 		verify(orderService, never()).closeOrder(orderId);
+	}
+
+	@Test
+	void givenAdmin_whenUpdateAvailability_thenSuccess() throws Exception {
+		UserRequestPostProcessor admin = user("admin").roles("ADMIN");
+
+		mockMvc.perform(put("/api/admin/pizzas/{id}/availability", 1).param("available", "true").with(admin))
+				.andExpect(status().isOk());
+
+		verify(pizzaService, times(1)).updateAvailability(1L, true);
+	}
+
+	@Test
+	void givenCustomer_whenUpdateAvailability_thenAccessDenied() throws Exception {
+		UserRequestPostProcessor customer = user("customer").roles("CUSTOMER");
+
+		mockMvc.perform(put("/api/admin/pizzas/{id}/availability", 1).param("available", "false").with(customer))
+				.andExpect(status().isForbidden());
+
+		verify(pizzaService, never()).updateAvailability(anyLong(), anyBoolean());
+	}
+
+	@Test
+	void givenGuest_whenUpdateAvailability_thenAccessDenied() throws Exception {
+		mockMvc.perform(put("/api/admin/pizzas/{id}/availability", 1).param("available", "true").with(anonymous()))
+				.andExpect(status().isUnauthorized());
+
+		verify(pizzaService, never()).updateAvailability(anyLong(), anyBoolean());
 	}
 
 }
