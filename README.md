@@ -92,6 +92,10 @@ To run the application with the **`dev`** profile in **Eclipse**, follow these s
 7. Click **Apply**
 8. Click **Run**
 
+OR 
+you can put this inside application.properties: spring.profiles.active=dev
+
+
 When the application starts, Spring will:
 1. Load `application.properties`
 2. Then load `application-dev.properties`
@@ -115,7 +119,9 @@ In the dev profile, spring.jpa.hibernate.ddl-auto=update is used
 The application uses a relational database (MySQL).
 
 ### Required steps:
-1. Create a local MySQL database (e.g. `internproject`)
+1. Create a local MySQL database (e.g. `internproject`) example of SQL query: create database pizza_app
+character set utf8mb4
+collate utf8mb4_unicode_ci;
 2. Create a database user with access to this database
 3. Configure the following properties in `application-dev.properties`:
 
