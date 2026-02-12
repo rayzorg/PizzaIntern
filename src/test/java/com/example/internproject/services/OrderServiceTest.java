@@ -1,7 +1,5 @@
 package com.example.internproject.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.internproject.dto.OrderItemRequestDto;
 import com.example.internproject.dto.OrderPlacedResponseDto;
+import com.example.internproject.dto.OrderSummaryCustomerDto;
 import com.example.internproject.dto.PlaceOrderDto;
 import com.example.internproject.models.OrderStatus;
 import com.example.internproject.models.Orders;
@@ -66,17 +65,18 @@ class OrderServiceTest {
 
 		Pizza pizza = new Pizza("hawai", "test", new BigDecimal("10.00"), "test");
 
-		User user = new User();
-		user.setEmail("user@test.com");
+		User user = mock(User.class);
+		when(user.getEmail()).thenReturn("user@test.com");
 
 		when(userRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
 		when(pizzaRepository.findById(1L)).thenReturn(Optional.of(pizza));
 		when(orderRepository.save(any(Orders.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
 		// WHEN
-		orderService.placeOrder(dto, user.getEmail());
+		OrderPlacedResponseDto result = orderService.placeOrder(dto, user.getEmail());
 
 		// THEN
+		assertEquals(OrderStatus.PREPARING, result.getStatus());
 		verify(orderRepository, atLeastOnce()).save(any(Orders.class));
 	}
 
@@ -158,8 +158,9 @@ class OrderServiceTest {
 
 		String userEmail = "user@test.com";
 
-		User user = new User();
-		user.setEmail(userEmail);
+		User user = mock(User.class);
+		lenient().when(user.getEmail()).thenReturn("user@test.com");
+		lenient().when(user.getId()).thenReturn(1L);
 
 		Pizza pizza = new Pizza("Pepperoni", "Spicy", new BigDecimal("12.00"), "img.png");
 		pizza.setAvailable(false);
@@ -173,8 +174,70 @@ class OrderServiceTest {
 
 		assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
 		assertTrue(exception.getReason().contains("unavailable"));
-		
+
 		verify(orderRepository, never()).save(any());
 
 	}
+
+	@Test
+	void givenTwoOrdersForUser_whenGetOrderHistoryForCustomer_thenOnlyUsersOrdersReturned() {
+		// GIVEN
+		User user1 = mock(User.class);
+		when(user1.getId()).thenReturn(1L);
+
+		Orders order1 = mock(Orders.class);
+		Orders order2 = mock(Orders.class);
+		Orders order3 = mock(Orders.class);
+
+		when(orderRepository.findByUserIdOrderByCreatedAtDesc(user1.getId())).thenReturn(List.of(order2, order1));
+
+		// WHEN
+		List<OrderSummaryCustomerDto> result = orderService.getOrderHistoryForCustomer(user1.getId());
+
+		// THEN
+		assertEquals(2, result.size());
+
+	}
+
+	@Test
+	void givenPreparingOrder_whenCloseOrder_thenOrderClosed() {
+		// GIVEN
+		Long orderId = 1L;
+
+		Orders order = new Orders();
+		order.setStatus(OrderStatus.PREPARING);
+
+		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+		when(orderRepository.save(any(Orders.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+		// WHEN
+		OrderPlacedResponseDto result = orderService.closeOrder(orderId);
+
+		// THEN
+		assertEquals(OrderStatus.CLOSED, result.getStatus());
+
+		verify(orderRepository, times(1)).findById(orderId);
+		verify(orderRepository, times(1)).save(order);
+	}
+
+	@Test
+	void givenNonPreparingOrder_whenCloseOrder_thenBadRequestThrown() {
+		// GIVEN
+		Long orderId = 1L;
+
+		Orders order = mock(Orders.class);
+		when(order.getStatus()).thenReturn(OrderStatus.CREATED);
+
+		when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+
+		// WHEN + THEN
+		ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+				() -> orderService.closeOrder(orderId));
+
+		assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+		assertEquals("Only PREPARING orders can be closed", exception.getReason());
+
+		verify(orderRepository, never()).save(any());
+	}
+
 }
