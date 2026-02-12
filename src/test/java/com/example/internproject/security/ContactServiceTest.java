@@ -1,4 +1,4 @@
-package com.example.internproject.services;
+package com.example.internproject.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.then;
 import com.example.internproject.controller.ContactController;
 import com.example.internproject.dto.ContactFormDto;
+import com.example.internproject.services.EmailService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import org.springframework.http.MediaType;

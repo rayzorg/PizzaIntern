@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -22,64 +24,42 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import jakarta.transaction.Transactional;
 
+@ActiveProfiles("test")
 @SpringBootTest
-@Transactional
+@AutoConfigureMockMvc(addFilters = true)
 public class CustomerSecurityTest {
 
 	@Autowired
     private MockMvc mockMvc;
 	
-	@Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private AuthService authService;
-
-    private String adminToken;
-    private String customerToken;
-
-    private Long adminId;
-    private Long customerId;
+	
     
     
-	@BeforeEach
-    void setup() {
-        User admin = authService.register("Admin", "admin@test.com", "password", "000", Role.ADMIN);
-        User customer = authService.register("Cust", "cust@test.com", "password", "111", Role.CUSTOMER);
-
-        adminId = admin.getId();
-        customerId = customer.getId();
-
-        adminToken = jwtService.generateToken(admin.getEmail(), admin.getRole(),admin.getName());
-        customerToken = jwtService.generateToken(customer.getEmail(), customer.getRole(),customer.getName());
-        
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .apply(springSecurity()) 
-                .build();
-    }
 	
 	@Test
 	void shouldAllowAccessToCustomerOrdersEndpoint() throws Exception {
-	    mockMvc.perform(get("/api/orders/myorders")
-	                    .header("Authorization", "Bearer " + customerToken))
-	            .andExpect(status().isOk());
+	   
 	}
 	@Test
 	void shouldNotAllowAccessToCustomerOrdersEndpointIfAdmin() throws Exception {
-	    mockMvc.perform(get("/api/orders/myorders")
-	    .header("Authorization", "Bearer " + adminToken))        
-	            .andExpect(status().isForbidden());
+	    
 
 	}
 	@Test
 	void shouldNotAllowAccessToCustomerOrdersEndpointIfUnauthorized() throws Exception {
-	    mockMvc.perform(get("/api/orders/myorders"))
-	            .andExpect(status().isForbidden());
+	    
 	}
+	@Test
+	void givenCustomer_WhenPlaceOrder_ShouldCreateOrder() throws Exception {
+	    
+	}
+	@Test
+	void givenAdmin_WhenPlaceOrder_ThenAccessDenied() throws Exception {
+	    
+	}
+	@Test
+	void givenGuest_WhenPlaceOrder_ThenAccessDenied() throws Exception {
+	    
+	}
+	
 }

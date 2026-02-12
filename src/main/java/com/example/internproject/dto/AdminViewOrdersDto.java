@@ -52,4 +52,5 @@ public class AdminViewOrdersDto {
 	public String getEmail() {
 		return email;
 	}
+	
 }
