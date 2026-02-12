@@ -42,9 +42,8 @@ class AuthServiceTest {
 	@InjectMocks
 	private UserService userService;
 	@InjectMocks
-    private AuthService authService;
+	private AuthService authService;
 
-	
 	@Mock
 	private UserRepository userRepository;
 	@Mock
@@ -60,7 +59,7 @@ class AuthServiceTest {
 		String email = "john@test.com";
 		String password = "secret123";
 
-		when(userRepository.existsByEmail(email)).thenReturn(false);
+		when(userRepository.existsByEmail(email)).thenReturn(false); // user does not exist
 		when(passwordEncoder.encode(password)).thenReturn("hashedSecret");
 		when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 		// when
@@ -72,7 +71,7 @@ class AuthServiceTest {
 	}
 
 	@Test
-	void shouldFailIfEmailAlreadyExists() {
+	void shouldFailRegisteringIfEmailAlreadyExists() {
 
 		// given
 		String email = "duplicate@test.com";
@@ -86,44 +85,37 @@ class AuthServiceTest {
 	}
 
 	@Test
-	void shouldFailIfUserDoesNotExist() {
+	void shouldFailIfCredentialsAreInvalidWhenLogging() {
 
-		// given
-		String email = "12@test.com";
+		// GIVEN
+	    String email = "12@test.com";
 
-		when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+	    when(authManager.authenticate(any()))
+	            .thenThrow(new BadCredentialsException("Bad credentials"));
 
-		// when,then
-		RuntimeException exception = assertThrows(RuntimeException.class, () -> authService.login(email, "password"));
+	    // WHEN THEN
+	    BadCredentialsException exception =
+	            assertThrows(BadCredentialsException.class,
+	                    () -> authService.login(email, "password"));
 
-		assertEquals("User not found", exception.getMessage());
-		verify(userRepository).findByEmail(email);
+	    assertEquals("Invalid email or password", exception.getMessage());
+
+	    verify(authManager).authenticate(any());
 	}
 
-	@Test
-	void shouldFailIfCredentialsAreInvalid() {
-
-		// given
-		when(authManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
-
-		// when,then
-		RuntimeException exception = assertThrows(RuntimeException.class,
-				() -> authService.login("test@test.com", "wrong"));
-		assertEquals("Invalid email or password", exception.getMessage());
-	}
 
 	@Test
-	void shouldLoginSuccessfully() {
+	void shouldLoginSuccessfullyWithEmailAndPassword() {
 
 		// given
-		User user = new User("rayan", "0493933", "rayan@rayan", "hashedpassword", Role.CUSTOMER);
+		User user = new User("rayan", "0493933", "rayan@rayan.com", "hashedpassword", Role.CUSTOMER);
 		UserPrincipal principal = new UserPrincipal(user);
 
 		Authentication authentication = mock(Authentication.class);
 
 		when(authentication.getPrincipal()).thenReturn(principal);
 		when(authManager.authenticate(any())).thenReturn(authentication);
-		when(jwtService.generateToken("test@test.com", Role.CUSTOMER,"rayan")).thenReturn("jwt-token");
+		when(jwtService.generateToken("rayan@rayan.com", Role.CUSTOMER, "rayan")).thenReturn("jwt-token");
 		// when
 		String token = authService.login(user.getEmail(), "password");
 
@@ -131,7 +123,7 @@ class AuthServiceTest {
 		assertEquals("jwt-token", token);
 
 		verify(authManager).authenticate(any());
-		verify(jwtService).generateToken(user.getEmail(), Role.CUSTOMER,user.getName());
+		verify(jwtService).generateToken(user.getEmail(), Role.CUSTOMER, user.getName());
 	}
 
 }
