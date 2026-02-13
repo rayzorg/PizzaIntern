@@ -187,7 +187,6 @@ class OrderServiceTest {
 
 		Orders order1 = mock(Orders.class);
 		Orders order2 = mock(Orders.class);
-		Orders order3 = mock(Orders.class);
 
 		when(orderRepository.findByUserIdOrderByCreatedAtDesc(user1.getId())).thenReturn(List.of(order2, order1));
 

@@ -1,40 +1,26 @@
 package com.example.internproject.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.example.internproject.models.Role;
 import com.example.internproject.models.User;
 import com.example.internproject.repository.UserRepository;
 import com.example.internproject.security.UserPrincipal;
-
-import jakarta.transaction.Transactional;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -88,21 +74,18 @@ class AuthServiceTest {
 	void shouldFailIfCredentialsAreInvalidWhenLogging() {
 
 		// GIVEN
-	    String email = "12@test.com";
+		String email = "12@test.com";
 
-	    when(authManager.authenticate(any()))
-	            .thenThrow(new BadCredentialsException("Bad credentials"));
+		when(authManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
 
-	    // WHEN THEN
-	    BadCredentialsException exception =
-	            assertThrows(BadCredentialsException.class,
-	                    () -> authService.login(email, "password"));
+		// WHEN THEN
+		BadCredentialsException exception = assertThrows(BadCredentialsException.class,
+				() -> authService.login(email, "password"));
 
-	    assertEquals("Invalid email or password", exception.getMessage());
+		assertEquals("Invalid email or password", exception.getMessage());
 
-	    verify(authManager).authenticate(any());
+		verify(authManager).authenticate(any());
 	}
-
 
 	@Test
 	void shouldLoginSuccessfullyWithEmailAndPassword() {
