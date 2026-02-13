@@ -22,6 +22,8 @@ import com.example.internproject.models.User;
 import com.example.internproject.repository.OrderRepository;
 import com.example.internproject.repository.PizzaRepository;
 import com.example.internproject.repository.UserRepository;
+import com.example.internproject.security.UserPrincipal;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -127,6 +129,7 @@ public class OrderService {
 		return toResponseDto(saved);
 	}
 
+	//transactional will only work if method is called in another class(service, etc...)
 	@Transactional
 	private void sendEmailAndUpdateStatus(Orders order) {
 		try {
@@ -166,7 +169,7 @@ public class OrderService {
 		}).toList();
 	}
 
-	public OrderPlacedResponseDto getOrderWhenPlaced(String publicId, User user) {
+	public OrderPlacedResponseDto getOrderWhenPlaced(String publicId, UserPrincipal user) {
 
 		Orders order = orderRepository.findByPublicIdAndUserId(publicId, user.getId())
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));

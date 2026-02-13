@@ -87,9 +87,15 @@ public class CustomerSecurityTest {
 
 	@Test
 	void givenCustomer_WhenPlaceOrder_ShouldCreateOrder() throws Exception {
+		User customer = new User();
+		customer.setEmail("customer@test.com");
+		customer.setPassword("password");
+		customer.setRole(Role.CUSTOMER);
+		
+		
         PlaceOrderDto dto = new PlaceOrderDto();
         dto.setPickupTime(LocalDateTime.now().plusHours(1));
-        dto.setEmail("test@test.com");
+        dto.setEmail(customer.getEmail());
         
         OrderItemRequestDto item = new OrderItemRequestDto();
         item.setPizzaId(1L);
@@ -97,10 +103,14 @@ public class CustomerSecurityTest {
         item.setSize(Size.MEDIUM);
         dto.setItems(List.of(item));
 
-       
+        
+		UserPrincipal principal = new UserPrincipal(customer);
+
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(principal, null,
+				principal.getAuthorities());
         mockMvc.perform(post("/api/orders")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(dto)).with(user("customer").roles("CUSTOMER")))
+                .content(objectMapper.writeValueAsString(dto)).with(authentication(auth)))
                 .andExpect(status().isOk());
 
         verify(orderService, times(1)).placeOrder(any(PlaceOrderDto.class), anyString());
