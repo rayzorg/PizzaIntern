@@ -16,6 +16,7 @@ import com.example.internproject.dto.PlaceOrderDto;
 import com.example.internproject.dto.OrderPlacedResponseDto;
 import com.example.internproject.dto.OrderSummaryCustomerDto;
 import com.example.internproject.models.User;
+import com.example.internproject.security.UserPrincipal;
 import com.example.internproject.services.OrderService;
 import jakarta.validation.Valid;
 
@@ -33,23 +34,23 @@ public class OrderController {
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@PostMapping
 	public ResponseEntity<OrderPlacedResponseDto> placeOrder(@Valid @RequestBody PlaceOrderDto dto,
-			@AuthenticationPrincipal User user) {
-		dto.setEmail(user.getEmail());
-		OrderPlacedResponseDto response = orderService.placeOrder(dto, user.getEmail());
+			@AuthenticationPrincipal UserPrincipal principal) {
+		dto.setEmail(principal.getUsername());
+		OrderPlacedResponseDto response = orderService.placeOrder(dto, principal.getUsername());
 
 		return ResponseEntity.ok(response);
 	}
 
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("/myorders")
-	public List<OrderSummaryCustomerDto> getMyOrders(Authentication authentication) {
-		User user = (User) authentication.getPrincipal();
-		return orderService.getOrderHistoryForCustomer(user.getId());
+	public List<OrderSummaryCustomerDto> getMyOrders(@AuthenticationPrincipal UserPrincipal principal) {
+		return orderService.getOrderHistoryForCustomer(principal.getId());
 	}
 
 	@PreAuthorize("hasRole('CUSTOMER')")
 	@GetMapping("/{publicId}")
-	public OrderPlacedResponseDto getOrderWhenPlaced(@PathVariable String publicId, @AuthenticationPrincipal User user) {
+	public OrderPlacedResponseDto getOrderWhenPlaced(@PathVariable String publicId,
+			@AuthenticationPrincipal UserPrincipal user) {
 		return orderService.getOrderWhenPlaced(publicId, user);
 	}
 
